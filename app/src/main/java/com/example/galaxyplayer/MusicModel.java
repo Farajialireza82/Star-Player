@@ -1,6 +1,7 @@
 package com.example.galaxyplayer;
 
 import android.graphics.Bitmap;
+import java.net.URI;
 
 
 public class MusicModel {
@@ -9,15 +10,15 @@ public class MusicModel {
 
     private String title;
 
-    private Bitmap art;
+    private URI art;
 
 
-    public Bitmap getArt() {
+    public URI getArt() {
         return art;
     }
 
-    public void setArt(Bitmap art) {
-        this.art = art;
+    public void setArt(URI art) {
+        this.art = art ;
     }
 
     public String getPath() {
