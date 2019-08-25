@@ -111,8 +111,6 @@ public class PlayActivity extends AppCompatActivity {
 
                 ExoPlayer exoPlayerS ;
 
-                //  releasePlayer();
-
                 if (service instanceof ServiceClass.VideoServiceBinder) {
 
                     exoPlayerS= ((ServiceClass.VideoServiceBinder) service).getExoPlayerInstance();

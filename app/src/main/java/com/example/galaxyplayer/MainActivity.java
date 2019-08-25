@@ -164,8 +164,6 @@ public class MainActivity extends AppCompatActivity {
 
         String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
 
-        // Can include more data for more details and check it.
-
         Cursor audioCursor = getContentResolver().query
 
                 (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
@@ -228,10 +226,6 @@ public class MainActivity extends AppCompatActivity {
                         mmr.setDataSource(MainActivity.this, Uri.parse(music.getPath()));
                         rawArt = mmr.getEmbeddedPicture();
 
-
-                        // if rawArt is null then no cover art is embedded in the file or is not
-                        // recognized as such.
-
                         if (rawArt != null) {
 
                             art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
@@ -248,9 +242,6 @@ public class MainActivity extends AppCompatActivity {
                                 BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
 
                         music.setArt(b);
-
-
-
 
                     }
 
