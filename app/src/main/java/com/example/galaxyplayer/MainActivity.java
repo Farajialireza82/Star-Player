@@ -4,11 +4,8 @@ package com.example.galaxyplayer;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -24,12 +21,8 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
