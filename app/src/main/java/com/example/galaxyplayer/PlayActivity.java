@@ -63,6 +63,8 @@ public class PlayActivity extends AppCompatActivity {
 
     String value;
 
+    String path;
+
 
 
 
@@ -79,6 +81,8 @@ public class PlayActivity extends AppCompatActivity {
 
         value = new String();
 
+        path = new String();
+
 
         playerView = findViewById(R.id.exoPlayerView);
 
@@ -90,8 +94,6 @@ public class PlayActivity extends AppCompatActivity {
             name = extras.getString("title");
 
         }
-
-        Intent serviceActivity = new Intent(PlayActivity.this, ServiceClass.class);
 
         service.putExtra("key", value);
 
@@ -227,18 +229,7 @@ public class PlayActivity extends AppCompatActivity {
         }
     }
 
-    public class NotificationReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
 
-            if(exoPlayer.getPlayWhenReady()){
-                pausePlayer();
-            }
-            else {
-                startPlayer();
-            }
-        }
-    }
 
     private void pausePlayer(){
         exoPlayer.setPlayWhenReady(false);
