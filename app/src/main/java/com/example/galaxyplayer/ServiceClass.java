@@ -38,8 +38,6 @@ public class ServiceClass extends Service {
 
     String value;
 
-    public Bitmap bitmap;
-
     ExoPlayer exoPlayer;
 
     IBinder videoServiceBinder = new VideoServiceBinder();
@@ -57,8 +55,6 @@ public class ServiceClass extends Service {
             value = extras.getString("key");
 
             name = extras.getString("title");
-
-            bitmap = extras.getParcelable("cover");
 
             uriString = value;
         }
@@ -101,7 +97,7 @@ public class ServiceClass extends Service {
         startForeground(1, notification);
 
 
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
 
