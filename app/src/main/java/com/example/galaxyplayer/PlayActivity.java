@@ -172,6 +172,8 @@ public class PlayActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
+        hideSystemUi();
+
     }
 
     @Override
