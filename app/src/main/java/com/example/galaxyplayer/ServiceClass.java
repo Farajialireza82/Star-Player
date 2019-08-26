@@ -52,7 +52,6 @@ public class ServiceClass extends Service {
 
         Bundle extras = intent.getExtras();
 
-
         if (extras != null) {
 
             value = extras.getString("key");
