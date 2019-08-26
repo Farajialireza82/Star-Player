@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap b =
                                 BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
 
-                        music.setArt(b.toString());
+                        music.setArt(music.getPath());
 
                     }
 
