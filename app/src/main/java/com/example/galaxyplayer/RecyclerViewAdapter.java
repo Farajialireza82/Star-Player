@@ -49,12 +49,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         viewHolder.textView.setText(title);
 
-        String stringCoverUri = song.getArt();
+        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
-        Uri coverUri = Uri.parse(stringCoverUri);
+        mmr.setDataSource(viewHolder.imageView.getContext() , Uri.parse(song.getPath()));
+
+        byte[] rawArt = mmr.getEmbeddedPicture();
+
+        String musicUri = song.getPath();
+
 
         Glide.with(viewHolder.imageView.getContext())
-                .load(coverUri)
+                .load(rawArt)
                 .into(viewHolder.imageView);
 
      //   viewHolder.imageView.setImageBitmap(song.getArt());
@@ -89,7 +94,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         playActivity.putExtra("title" , song.getTitle());
 
-            context.startActivity(playActivity);
+        context.startActivity(playActivity);
 
     }
 
