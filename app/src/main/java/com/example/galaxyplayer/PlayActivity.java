@@ -161,7 +161,7 @@ public class PlayActivity extends AppCompatActivity {
 
         };
 
-        bindService(serviceActivity , connection , BIND_AUTO_CREATE);
+      //  bindService(serviceActivity , connection , BIND_AUTO_CREATE);
 
         bindService(new Intent(this , ServiceClass.class) , connection , Context.BIND_AUTO_CREATE);
 
@@ -206,6 +206,9 @@ public class PlayActivity extends AppCompatActivity {
 
         super.onDestroy();
 
+        exoPlayer = null;
+        playerView.setPlayer(null);
+
     }
 
     private void releasePlayer() {
@@ -229,7 +232,7 @@ public class PlayActivity extends AppCompatActivity {
             if(exoPlayer.getPlayWhenReady()){
                 pausePlayer();
             }
-            else if(!exoPlayer.getPlayWhenReady()){
+            else {
                 startPlayer();
             }
         }

@@ -23,6 +23,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -230,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
                             art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
 
-                            music.setArt(art);
+                            music.setArt(art.toString());
 
                         }
                     }
@@ -241,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
                         Bitmap b =
                                 BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
 
-                        music.setArt(b);
+                        music.setArt(b.toString());
 
                     }
 

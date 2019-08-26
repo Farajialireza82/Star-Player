@@ -16,14 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<MusicModel> songs;
-
-    private Integer num = 0;
 
     public RecyclerViewAdapter(List<MusicModel> songs) {
         this.songs = songs;
@@ -42,14 +43,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
 
-
         final MusicModel song = songs.get(i);
 
         final String title = song.getTitle();
 
         viewHolder.textView.setText(title);
 
-        viewHolder.imageView.setImageBitmap(song.getArt());
+        String uri = song.getArt();
+
+        Glide.with(viewHolder.imageView.getContext())
+                .load(uri)
+                .into(viewHolder.imageView);
+
+     //   viewHolder.imageView.setImageBitmap(song.getArt());
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 
@@ -81,14 +87,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         playActivity.putExtra("title" , song.getTitle());
 
-        if(num == 0 ) {
-
             context.startActivity(playActivity);
-            num++;
-        }
-        else{
 
-        }
     }
 
 
