@@ -49,10 +49,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         viewHolder.textView.setText(title);
 
-        String uri = song.getArt();
+        String stringCoverUri = song.getArt();
+
+        Uri coverUri = Uri.parse(stringCoverUri);
 
         Glide.with(viewHolder.imageView.getContext())
-                .load(uri)
+                .load(coverUri)
                 .into(viewHolder.imageView);
 
      //   viewHolder.imageView.setImageBitmap(song.getArt());
