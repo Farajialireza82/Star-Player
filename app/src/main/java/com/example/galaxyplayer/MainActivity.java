@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,12 +58,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-
         play = true;
 
         logs = findViewById(R.id.logs);
+
+        Log.i("activity0101" , "We Should see a start text");
+
+        logs.setText("App Started");
 
         songUrls = findViewById(R.id.recycler_view);
 
@@ -84,7 +86,17 @@ public class MainActivity extends AppCompatActivity {
 
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
 
+            Log.i("activity0101" , "music setter may start now");
+
             setmusicsOnRecyclerBar();
+
+            Log.i("activity0101" , "we should see the song list");
+
+        }
+
+        else{
+
+            Toast.makeText(this, "In order to load your musics , App needs Access to You Data", Toast.LENGTH_LONG).show();
 
         }
 
@@ -162,7 +174,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void setmusicsOnRecyclerBar(){
 
+        Integer i = 0;
+
         logs.setText("permission checked");
+
+        Log.i("activity0101" , "we should see a permission text in log text");
 
         String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
 
@@ -184,6 +200,8 @@ public class MainActivity extends AppCompatActivity {
 
                         logs.setText("getting music");
 
+                        Log.i("activity0101"  , " we should see a getting music text in the log text ");
+
                         String songTitle =audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
 
                         String title = songTitle.replaceAll(".mp3" , "");
@@ -192,11 +210,21 @@ public class MainActivity extends AppCompatActivity {
 
                         logs.setText("title added ");
 
+                        Log.i("activity0101"  , " we should see a title added text in the log text ");
+
+
                         songNames.add(title);
                     }
                     catch (Exception e ){
 
+                        Log.i("activity0101"  , " there was an Exeption while setting the title ");
+
+
                         logs.setText("error at setting song title " + e.toString());
+
+                        Log.i("activity0101"  , " we should see a error in the log text ");
+
+                        Log.i("activity0101"  , " error is " + e.toString());
 
                         music.setTitle("Unknown");
 
@@ -208,11 +236,16 @@ public class MainActivity extends AppCompatActivity {
 
                     logs.setText("music path set");
 
+                    Log.i("activity0101"  , " we should see music path set text in the log text ");
 
 
                     logs.setText("music added in list");
 
+                    Log.i("activity0101"  , " we should see music added set text in the log text ");
+
                     songs.add(music);
+
+                    i++;
 
 
 
@@ -255,7 +288,12 @@ public class MainActivity extends AppCompatActivity {
         }
         audioCursor.close();
 
+
         recyclerViewAdapter.notifyDataSetChanged();
+
+        if(i == 0 ){
+            logs.setText("No Music found");
+        }
     }
 
 
