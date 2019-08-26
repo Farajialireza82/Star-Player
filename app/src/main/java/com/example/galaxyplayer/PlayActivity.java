@@ -66,8 +66,6 @@ public class PlayActivity extends AppCompatActivity {
     String path;
 
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +73,7 @@ public class PlayActivity extends AppCompatActivity {
 
         releasePlayer();
 
-        Intent service = new Intent(this , ServiceClass.class);
+        Intent service = new Intent(this, ServiceClass.class);
 
         name = new String();
 
@@ -97,10 +95,21 @@ public class PlayActivity extends AppCompatActivity {
 
         service.putExtra("key", value);
 
-        service.putExtra("title" , name);
+        service.putExtra("title", name);
+
+        if (exoPlayer == null) {
+
+            service.putExtra("status", "null");
+
+        } else {
+
+            stopPlayer();
+            service.putExtra("status", "yes");
+
+
+        }
 
         startService(service);
-
 
 
         final ServiceConnection connection = new ServiceConnection() {
@@ -111,19 +120,19 @@ public class PlayActivity extends AppCompatActivity {
 
                 releasePlayer();
 
-                ExoPlayer exoPlayerS ;
+                ExoPlayer exoPlayerS;
 
                 if (service instanceof ServiceClass.VideoServiceBinder) {
 
-                    exoPlayerS= ((ServiceClass.VideoServiceBinder) service).getExoPlayerInstance();
+                    exoPlayerS = ((ServiceClass.VideoServiceBinder) service).getExoPlayerInstance();
 
-                    if(exoPlayerS == null){
-                        Log.i("nullCheck" , "exoPLayerService is null");
+                    if (exoPlayerS == null) {
+                        Log.i("nullCheck", "exoPLayerService is null");
                     }
 
                     Toast.makeText(PlayActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
 
-                    Log.i("service-activity" , "Service Connected successfully ");
+                    Log.i("service-activity", "Service Connected successfully ");
 
                     try {
 
@@ -137,9 +146,9 @@ public class PlayActivity extends AppCompatActivity {
 
                         playerView.setPlayer(exoPlayer);
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
-                        Log.i("nullCheck" ,  e.toString());
+                        Log.i("nullCheck", e.toString());
 
                     }
 
@@ -157,15 +166,15 @@ public class PlayActivity extends AppCompatActivity {
 
                 Toast.makeText(PlayActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
 
-                Log.i("service-activity" , "Service Disconnected successfully ");
+                Log.i("service-activity", "Service Disconnected successfully ");
 
             }
 
         };
 
-      //  bindService(serviceActivity , connection , BIND_AUTO_CREATE);
+        //  bindService(serviceActivity , connection , BIND_AUTO_CREATE);
 
-        bindService(new Intent(this , ServiceClass.class) , connection , Context.BIND_AUTO_CREATE);
+        bindService(new Intent(this, ServiceClass.class), connection, Context.BIND_AUTO_CREATE);
 
 
     }
@@ -230,12 +239,20 @@ public class PlayActivity extends AppCompatActivity {
     }
 
 
-
-    private void pausePlayer(){
+    private void pausePlayer() {
         exoPlayer.setPlayWhenReady(false);
         exoPlayer.getPlaybackState();
     }
-    private void startPlayer(){
+
+
+    private void stopPlayer() {
+        exoPlayer.setPlayWhenReady(false);
+        exoPlayer.getPlaybackState();
+        exoPlayer = null;
+
+    }
+
+    private void startPlayer() {
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.getPlaybackState();
     }

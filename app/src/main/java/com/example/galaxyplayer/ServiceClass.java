@@ -59,7 +59,22 @@ public class ServiceClass extends Service {
             uriString = value;
         }
 
-        mediaSession = new MediaSessionCompat(this , "tag");
+        String status = extras.getString("status");
+
+        if (status == "yes") {
+
+            exoPlayer = null;
+
+        }
+
+        if (status == "pause"){
+
+            exoPlayer.setPlayWhenReady(false);
+            exoPlayer.getPlaybackState();
+
+        }
+
+        mediaSession = new MediaSessionCompat(this, "tag");
 
         exoPlayer = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(this),
@@ -75,21 +90,21 @@ public class ServiceClass extends Service {
 
         exoPlayer.prepare(mediaSource, false, false);
 
-        Bitmap picture = BitmapFactory.decodeResource(getResources() , R.drawable.exo_edit_mode_logo);
+        Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.exo_controls_play)
                 .setContentTitle("Galaxy Player")
                 .setLargeIcon(picture)
                 .setContentText(name)
-                .addAction(R.drawable.ic_dislike_black_24dp , "Dislike" , null)
-                .addAction(R.drawable.ic_skip_previous_black_24dp , "Previous" , null)
-                .addAction(R.drawable.ic_play_circle_filled_black_24dp , "Play/Pause" , null)
+                .addAction(R.drawable.ic_dislike_black_24dp, "Dislike", null)
+                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
+                .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", null)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
-                .addAction(R.drawable.ic_like_black_24dp , "Like" , null)
+                .addAction(R.drawable.ic_like_black_24dp, "Like", null)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1,2,3)
-                .setMediaSession(mediaSession.getSessionToken()))
+                        .setShowActionsInCompactView(1, 2, 3)
+                        .setMediaSession(mediaSession.getSessionToken()))
                 .setSubText(name)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
