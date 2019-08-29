@@ -103,8 +103,9 @@ public class PlayActivity extends AppCompatActivity {
 
         } else {
 
-            stopPlayer();
             service.putExtra("status", "yes");
+
+
 
 
         }
@@ -171,8 +172,6 @@ public class PlayActivity extends AppCompatActivity {
             }
 
         };
-
-        //  bindService(serviceActivity , connection , BIND_AUTO_CREATE);
 
         bindService(new Intent(this, ServiceClass.class), connection, Context.BIND_AUTO_CREATE);
 

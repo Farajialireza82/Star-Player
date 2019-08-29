@@ -63,16 +63,19 @@ public class ServiceClass extends Service {
 
         if (status == "yes") {
 
+
             exoPlayer = null;
+
+
 
         }
 
-        if (status == "pause"){
+       /* if (status == "pause"){
 
             exoPlayer.setPlayWhenReady(false);
             exoPlayer.getPlaybackState();
 
-        }
+        }*/
 
         mediaSession = new MediaSessionCompat(this, "tag");
 
