@@ -254,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                     Bitmap art;
                     BitmapFactory.Options bfo = new BitmapFactory.Options();
 
-                    try {
+                  /*  try {
 
                         logs.setText("getting music cover");
 
@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
                         music.setArt(music.getPath());
 
-                    }
+                    }*/
 
 
 
