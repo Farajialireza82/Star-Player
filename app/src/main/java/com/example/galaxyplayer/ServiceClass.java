@@ -50,6 +50,8 @@ public class ServiceClass extends Service {
 
         Bundle extras = intent.getExtras();
 
+        String action;
+
         if (extras != null) {
 
             value = extras.getString("key");
@@ -59,23 +61,9 @@ public class ServiceClass extends Service {
             uriString = value;
         }
 
-        String status = extras.getString("status");
-
-        if (status == "yes") {
+        action = extras.getString("action");
 
 
-            exoPlayer = null;
-
-
-
-        }
-
-       /* if (status == "pause"){
-
-            exoPlayer.setPlayWhenReady(false);
-            exoPlayer.getPlaybackState();
-
-        }*/
 
         mediaSession = new MediaSessionCompat(this, "tag");
 

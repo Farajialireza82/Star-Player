@@ -97,18 +97,7 @@ public class PlayActivity extends AppCompatActivity {
 
         service.putExtra("title", name);
 
-        if (exoPlayer == null) {
 
-            service.putExtra("status", "null");
-
-        } else {
-
-            service.putExtra("status", "yes");
-
-
-
-
-        }
 
         startService(service);
 
