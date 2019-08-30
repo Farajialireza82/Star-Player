@@ -12,16 +12,16 @@ public class MusicModel {
 
     private String title;
 
-    private String art;
+   /* private String art;
 
 
-    public String getArt() {
-        return art;
-    }
+     public String getArt() {
+     return art;
+     }
 
-    public void setArt(String art) {
-        this.art = art ;
-    }
+     public void setArt(String art) {
+     this.art = art ;
+     }*/
 
     public String getPath() {
         return path;
