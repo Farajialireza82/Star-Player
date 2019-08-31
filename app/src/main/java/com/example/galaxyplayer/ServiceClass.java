@@ -3,6 +3,7 @@ package com.example.galaxyplayer;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,13 +11,9 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
-import android.util.Base64;
-import android.util.Log;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -26,23 +23,44 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.gson.Gson;
 
 import static com.example.galaxyplayer.App.CHANNEL_ID;
 
 public class ServiceClass extends Service {
 
-    String uriString;
+    public static final String EXTRA_ACTION = "extra_action";
+    public static final String EXTRA_TITLE = "extra_title";
+    public static final String EXTRA_MUSIC_URL = "extra_music_url";
 
-    String name;
+    public static final String ACTION_PAUSE = "action_pause";
+    public static final String ACTION_PLAY = "action_play";
+    public static final String ACTION_PLAY_PAUSE = "action_play_pause";
 
-    String value;
+    public static final int REQUEST_CODE_NOTIFICATION = 1;
+
+    String currentMusicUrl = "";
+
+    String name = "";
 
     ExoPlayer exoPlayer;
 
     IBinder videoServiceBinder = new VideoServiceBinder();
 
     private MediaSessionCompat mediaSession;
+
+    public static Intent createIntent(Context context, String action) {
+        Intent intent = new Intent(context, ServiceClass.class);
+        intent.putExtra(EXTRA_ACTION, action);
+        return intent;
+    }
+
+    public static Intent createIntent(Context context, String action, String songURL, String songTitle) {
+        Intent intent = new Intent(context, ServiceClass.class);
+        intent.putExtra(EXTRA_ACTION, action);
+        intent.putExtra(EXTRA_TITLE, songTitle);
+        intent.putExtra(EXTRA_MUSIC_URL, songURL);
+        return intent;
+    }
 
 
     @Override
@@ -51,61 +69,51 @@ public class ServiceClass extends Service {
         Bundle extras = intent.getExtras();
 
         String action;
+        String title;
+        String songURI;
 
-        if (extras != null) {
-
-            value = extras.getString("key");
-
-            name = extras.getString("title");
-
-            uriString = value;
+        if (extras == null) {
+            return START_STICKY;
         }
 
-        action = extras.getString("action");
+        songURI = extras.getString(EXTRA_MUSIC_URL, "");
 
+        title = extras.getString(EXTRA_TITLE, "");
 
+        action = extras.getString(EXTRA_ACTION, "");
 
-        mediaSession = new MediaSessionCompat(this, "tag");
+        if (action.length() == 0) {
+            return START_STICKY;
+        }
 
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(
-                new DefaultRenderersFactory(this),
-                new DefaultTrackSelector(), new DefaultLoadControl());
-
-
-        Uri uri = Uri.parse(uriString);
-
-        MediaSource mediaSource = new ExtractorMediaSource.Factory(
-                new DefaultDataSourceFactory(this, "Exoplayer-local")).
-                createMediaSource(uri);
-
-
-        exoPlayer.prepare(mediaSource, false, false);
-
-        Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.exo_controls_play)
-                .setContentTitle("Galaxy Player")
-                .setLargeIcon(picture)
-                .setContentText(name)
-                .addAction(R.drawable.ic_dislike_black_24dp, "Dislike", null)
-                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
-                .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", null)
-                .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
-                .addAction(R.drawable.ic_like_black_24dp, "Like", null)
-                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1, 2, 3)
-                        .setMediaSession(mediaSession.getSessionToken()))
-                .setSubText(name)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
-
-        startForeground(1, notification);
-
+        switch (action) {
+            case ACTION_PLAY: {
+                playSong(songURI, title);
+                break;
+            }
+            case ACTION_PAUSE: {
+                pauseSong();
+                break;
+            }
+            case ACTION_PLAY_PAUSE: {
+                //TODO your impl
+                break;
+            }
+            default: {
+                break;
+            }
+        }
 
         return START_STICKY;
     }
 
+    @Override
+    public void onDestroy() {
+        if (exoPlayer != null) {
+            exoPlayer.release();
+        }
+        super.onDestroy();
+    }
 
     @Nullable
     @Override
@@ -126,4 +134,91 @@ public class ServiceClass extends Service {
     }
 
 
+    private void playSong(String url, String title) {
+        //this song is already playing
+        if (
+                exoPlayer != null &&
+                        exoPlayer.getPlayWhenReady() &&
+                        currentMusicUrl.equalsIgnoreCase(url)
+        ) {
+            return;
+        }
+
+        //check to see if exo player has been created
+        if (exoPlayer == null) {
+            createExoPlayer();
+        }
+
+        //if the song is the same as previous and stopped we should play it here
+        if (currentMusicUrl.equalsIgnoreCase(url)) {
+            exoPlayer.setPlayWhenReady(true);
+            return;
+        }
+        //if the url is not the same we have to first stop the player
+        exoPlayer.stop();
+
+        //create new media source and feed to ExoPlayer
+        MediaSource source = createMediaSource(url);
+
+        exoPlayer.prepare(source);
+
+        exoPlayer.setPlayWhenReady(true);
+
+
+        currentMusicUrl = url;
+        name = title;
+
+        createNotificationForTheSong(title);
+    }
+
+    private void createNotificationForTheSong(String title) {
+        PendingIntent playPause = PendingIntent.getService(
+                this,
+                REQUEST_CODE_NOTIFICATION,
+                ServiceClass.createIntent(this, ACTION_PLAY_PAUSE),
+                0
+        );
+
+        mediaSession = new MediaSessionCompat(this, "tag");
+        Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.exo_controls_play)
+                .setContentTitle("Galaxy Player")
+                .setLargeIcon(picture)
+                .setContentText(title)
+                .addAction(R.drawable.ic_dislike_black_24dp, "Dislike", null)
+                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
+                .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
+                .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
+                .addAction(R.drawable.ic_like_black_24dp, "Like", null)
+                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                        .setShowActionsInCompactView(1, 2, 3)
+                        .setMediaSession(mediaSession.getSessionToken()))
+                .setSubText(name)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
+
+        startForeground(1, notification);
+    }
+
+    private void pauseSong() {
+        if (exoPlayer != null) {
+            exoPlayer.setPlayWhenReady(false);
+        }
+    }
+
+    private void createExoPlayer() {
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(
+                new DefaultRenderersFactory(this),
+                new DefaultTrackSelector(), new DefaultLoadControl());
+
+    }
+
+    private MediaSource createMediaSource(String songURL) {
+        Uri uri = Uri.parse(songURL);
+
+        return new ExtractorMediaSource.Factory(
+                new DefaultDataSourceFactory(this, "Exoplayer-local")).
+                createMediaSource(uri);
+    }
 }
