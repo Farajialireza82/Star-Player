@@ -89,6 +89,7 @@ public class ServiceClass extends Service {
         switch (action) {
             case ACTION_PLAY: {
                 playSong(songURI, title);
+                exoPlayer.setPlayWhenReady(true);
                 break;
             }
             case ACTION_PAUSE: {
