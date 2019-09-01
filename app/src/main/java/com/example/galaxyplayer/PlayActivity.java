@@ -65,15 +65,65 @@ public class PlayActivity extends AppCompatActivity {
 
     String path;
 
+    final ServiceConnection connection = new ServiceConnection() {
+
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            ExoPlayer exoPlayerS;
+
+            if (service instanceof ServiceClass.VideoServiceBinder) {
+
+                exoPlayerS = ((ServiceClass.VideoServiceBinder) service).getExoPlayerInstance();
+
+                if (exoPlayerS == null) {
+                    Log.i("nullCheck", "exoPLayerService is null");
+                    return;
+                }
+
+                Toast.makeText(PlayActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
+
+                Log.i("service-activity", "Service Connected successfully ");
+
+                try {
+
+                    exoPlayerS.setPlayWhenReady(playWhenReady);
+
+                    exoPlayerS.seekTo(currentWindow, playbackPosition);
+
+                    exoPlayer = exoPlayerS;
+
+                    playerView.setPlayer(exoPlayer);
+
+                } catch (Exception e) {
+
+                    Log.i("nullCheck", e.toString());
+
+                }
+
+            }
+
+
+        }
+
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+            Toast.makeText(PlayActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
+
+            Log.i("service-activity", "Service Disconnected successfully ");
+
+        }
+
+    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
-
-        releasePlayer();
-
-        Intent service = new Intent(this, ServiceClass.class);
+        playerView = findViewById(R.id.exoPlayerView);
 
         name = new String();
 
@@ -81,8 +131,6 @@ public class PlayActivity extends AppCompatActivity {
 
         path = new String();
 
-
-        playerView = findViewById(R.id.exoPlayerView);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -93,84 +141,20 @@ public class PlayActivity extends AppCompatActivity {
 
         }
 
-        service.putExtra("key", value);
-
-        service.putExtra("title", name);
-
-        service.putExtra("action" , "play");
-
-        startService(service);
-
-        final ServiceConnection connection = new ServiceConnection() {
-
-
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-
-                releasePlayer();
-
-                ExoPlayer exoPlayerS;
-
-                if (service instanceof ServiceClass.VideoServiceBinder) {
-
-                    exoPlayerS = ((ServiceClass.VideoServiceBinder) service).getExoPlayerInstance();
-
-                    if (exoPlayerS == null) {
-
-                        Log.i("nullCheck", "exoPLayerService is null");
-
-                    }
-
-                    Toast.makeText(PlayActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
-
-                    Log.i("service-activity", "Service Connected successfully ");
-
-                    try {
-
-                        exoPlayerS.setPlayWhenReady(playWhenReady);
-
-                        exoPlayerS.seekTo(currentWindow, playbackPosition);
-
-                        releasePlayer();
-
-                        exoPlayer = exoPlayerS;
-
-                        playerView.setPlayer(exoPlayer);
-
-                    } catch (Exception e) {
-
-                        Log.i("nullCheck", e.toString());
-
-                    }
-
-                }
-
-
-            }
-
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-
-
-                releasePlayer();
-
-                Toast.makeText(PlayActivity.this, "Service Disconnected", Toast.LENGTH_SHORT).show();
-
-                Log.i("service-activity", "Service Disconnected successfully ");
-
-            }
-
-        };
-
-        bindService(new Intent(this, ServiceClass.class), connection, Context.BIND_AUTO_CREATE);
-
-
+        startService(
+                ServiceClass.createIntent(
+                        this,
+                        ServiceClass.ACTION_PLAY,
+                        value,
+                        name
+                )
+        );
     }
 
     @Override
     public void onStart() {
         super.onStart();
+        bindService(new Intent(this, ServiceClass.class), connection, Context.BIND_AUTO_CREATE);
 
         hideSystemUi();
 
@@ -198,7 +182,7 @@ public class PlayActivity extends AppCompatActivity {
 
     @Override
     public void onStop() {
-
+        unbindService(connection);
         super.onStop();
 
     }
@@ -211,20 +195,6 @@ public class PlayActivity extends AppCompatActivity {
         exoPlayer = null;
         playerView.setPlayer(null);
 
-    }
-
-    private void releasePlayer() {
-        if (exoPlayer != null) {
-            playbackPosition = exoPlayer.getCurrentPosition();
-
-
-            currentWindow = exoPlayer.getCurrentWindowIndex();
-
-            playWhenReady = exoPlayer.getPlayWhenReady();
-
-            exoPlayer.release();
-            exoPlayer = null;
-        }
     }
 
 
