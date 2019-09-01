@@ -14,6 +14,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -23,6 +24,8 @@ import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+
+import java.util.ArrayList;
 
 import static com.example.galaxyplayer.App.CHANNEL_ID;
 
@@ -35,6 +38,12 @@ public class ServiceClass extends Service {
     public static final String ACTION_PAUSE = "action_pause";
     public static final String ACTION_PLAY = "action_play";
     public static final String ACTION_PLAY_PAUSE = "action_play_pause";
+    public static final String ACTION_LIKED = "action_liked";
+    public static final String ACTION_DISLIKED = "action_disliked";
+
+    public static ArrayList<String> disLikedSongs = new ArrayList<>();
+    public static ArrayList<String> likedSongs = new ArrayList<>();
+
 
     public static final int REQUEST_CODE_NOTIFICATION = 1;
 
@@ -103,6 +112,19 @@ public class ServiceClass extends Service {
                     resumeSong();
                 }
                 break;
+            }
+            case ACTION_LIKED: {
+
+                Toast.makeText(this, "Song Added to Favorites list", Toast.LENGTH_SHORT).show();
+                break;
+            }
+
+            case ACTION_DISLIKED : {
+
+                Toast.makeText(this, "Song Added to Disliked list", Toast.LENGTH_SHORT).show();
+
+                disLikedSongs.add(currentMusicUrl);
+
             }
             default: {
                 break;
@@ -182,6 +204,19 @@ public class ServiceClass extends Service {
                 ServiceClass.createIntent(this, ACTION_PLAY_PAUSE),
                 0
         );
+        PendingIntent likedSong = PendingIntent.getService(
+                this,
+                REQUEST_CODE_NOTIFICATION,
+                ServiceClass.createIntent(this, ACTION_LIKED),
+                0
+        );
+        PendingIntent dislikedSong = PendingIntent.getService(
+                this,
+                REQUEST_CODE_NOTIFICATION,
+                ServiceClass.createIntent(this, ACTION_DISLIKED),
+                0
+        );
+
 
         mediaSession = new MediaSessionCompat(this, "tag");
         Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
@@ -194,7 +229,7 @@ public class ServiceClass extends Service {
                 .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
                 .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
-                .addAction(R.drawable.ic_like_black_24dp, "Like", null)
+                .addAction(R.drawable.ic_like_black_24dp, "Like", likedSong)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2, 3)
                         .setMediaSession(mediaSession.getSessionToken()))
