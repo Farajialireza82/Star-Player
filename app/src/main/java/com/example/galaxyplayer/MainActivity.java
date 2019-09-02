@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -22,16 +23,19 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
 
     public static boolean play;
+
 
     ArrayList<String> songNames;
 
@@ -50,9 +54,6 @@ public class MainActivity extends AppCompatActivity {
     GridLayoutManager gridlayoutManager;
 
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         logs = findViewById(R.id.logs);
 
-        Log.i("activity0101" , "We Should see a start text");
+        Log.i("activity0101", "We Should see a start text");
 
         logs.setText("App Started");
 
@@ -86,20 +87,19 @@ public class MainActivity extends AppCompatActivity {
 
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
 
-            Log.i("activity0101" , "music setter may start now");
+            Log.i("activity0101", "music setter may start now");
 
-            setmusicsOnRecyclerBar();
+            AsyncTaskMusicSeter musicSeter = new AsyncTaskMusicSeter(this);
 
-            Log.i("activity0101" , "we should see the song list");
+            musicSeter.execute(recyclerViewAdapter);
 
-        }
+            Log.i("activity0101", "we should see the song list");
 
-        else{
+        } else {
 
             Toast.makeText(this, "In order to load your musics , App needs Access to You Data", Toast.LENGTH_LONG).show();
 
         }
-
 
 
     }
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                     ActivityCompat
                             .requestPermissions(
                                     (Activity) context,
-                                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                                     MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                 }
                 return false;
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions((Activity) context,
-                                new String[] { permission },
+                                new String[]{permission},
                                 MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
                     }
                 });
@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setmusicsOnRecyclerBar();
+                    //setmusicsOnRecyclerBar();
 
                 } else {
                     Toast.makeText(this, "Access Denied", Toast.LENGTH_SHORT).show();
@@ -172,129 +172,109 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setmusicsOnRecyclerBar(){
 
-        Integer i = 0;
+    public class AsyncTaskMusicSeter extends android.os.AsyncTask<RecyclerViewAdapter, Integer, String> {
 
-        logs.setText("permission checked");
+        private WeakReference<MainActivity> activityWeakReference;
 
-        Log.i("activity0101" , "we should see a permission text in log text");
+        AsyncTaskMusicSeter(MainActivity activity) {
 
-        String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
+            activityWeakReference = new WeakReference<MainActivity>(activity);
 
-        Cursor audioCursor = getContentResolver().query
+        }
 
-                (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
+        @Override
+        protected String doInBackground(RecyclerViewAdapter... adapters) {
 
-                        null, null, null);
+            MainActivity activity = activityWeakReference.get();
 
-        if (audioCursor != null) {
+            Integer i = 0;
 
-            if (audioCursor.moveToFirst()) {
+            RecyclerViewAdapter viewAdapter = adapters[0];
 
-                do {
+            activity.logs.setText("permission checked");
 
-                    MusicModel music = new MusicModel();
+            Log.i("activity0101", "we should see a permission text in log text");
 
-                    try {
+            String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
 
-                        logs.setText("getting music");
+            Cursor audioCursor = getContentResolver().query
 
-                        Log.i("activity0101"  , " we should see a getting music text in the log text ");
+                    (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
 
-                        String songTitle =audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
+                            null, null, null);
 
-                        String title = songTitle.replaceAll(".mp3" , "");
+            if (audioCursor != null) {
 
-                        music.setTitle(title);
+                if (audioCursor.moveToFirst()) {
 
-                        logs.setText("title added ");
+                    do {
 
-                        Log.i("activity0101"  , " we should see a title added text in the log text ");
+                        MusicModel music = new MusicModel();
 
+                        try {
 
-                        songNames.add(title);
-                    }
-                    catch (Exception e ){
+                            activity.logs.setText("getting music");
 
-                        Log.i("activity0101"  , " there was an Exeption while setting the title ");
+                            Log.i("activity0101", " we should see a getting music text in the log text ");
 
+                            String songTitle = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
 
-                        logs.setText("error at setting song title " + e.toString());
+                            String title = songTitle.replaceAll(".mp3", "");
 
-                        Log.i("activity0101"  , " we should see a error in the log text ");
+                            music.setTitle(title);
 
-                        Log.i("activity0101"  , " error is " + e.toString());
+                            activity.logs.setText("title added ");
 
-                        music.setTitle("Unknown");
-
-                        songNames.add("Unknown");
-
-                    }
-
-                    music.setPath(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)));
-
-                    logs.setText("music path set");
-
-                    Log.i("activity0101"  , " we should see music path set text in the log text ");
+                            Log.i("activity0101", " we should see a title added text in the log text ");
 
 
-                    logs.setText("music added in list");
+                            activity.songNames.add(title);
+                        } catch (Exception e) {
 
-                    Log.i("activity0101"  , " we should see music added set text in the log text ");
-
-                    songs.add(music);
-
-                    i++;
+                            Log.i("activity0101", " there was an Exeption while setting the title ");
 
 
+                            activity.logs.setText("error at setting song title " + e.toString());
 
-                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-                    byte[] rawArt;
-                    Bitmap art;
-                    BitmapFactory.Options bfo = new BitmapFactory.Options();
+                            Log.i("activity0101", " we should see a error in the log text ");
 
-                  /*  try {
+                            Log.i("activity0101", " error is " + e.toString());
 
-                        logs.setText("getting music cover");
+                            music.setTitle("Unknown");
 
-                        mmr.setDataSource(MainActivity.this, Uri.parse(music.getPath()));
-                        rawArt = mmr.getEmbeddedPicture();
-
-                        if (rawArt != null) {
-
-                            art = BitmapFactory.decodeByteArray(rawArt, 0, rawArt.length, bfo);
-
-                            music.setArt(art.toString());
+                            activity.songNames.add("Unknown");
 
                         }
-                    }
-                    catch(Exception e){
 
-                        logs.setText("cover failed exeption : " + e.toString());
+                        music.setPath(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)));
 
-                        Bitmap b =
-                                BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher_foreground);
+                        activity.logs.setText("music path set");
 
-                        music.setArt(music.getPath());
-
-                    }*/
+                        Log.i("activity0101", " we should see music path set text in the log text ");
 
 
+                        activity.logs.setText("music added in list");
+
+                        Log.i("activity0101", " we should see music added set text in the log text ");
+
+                        activity.songs.add(music);
+
+                        i++;
 
 
-                } while (audioCursor.moveToNext());
+                    } while (audioCursor.moveToNext());
+                }
             }
-        }
-        audioCursor.close();
+            audioCursor.close();
 
 
-        recyclerViewAdapter.notifyDataSetChanged();
+            viewAdapter.notifyDataSetChanged();
 
-        if(i == 0 ){
-            logs.setText("No Music found");
+            if (i == 0) {
+                activity.logs.setText("No Music found");
+            }
+            return null;
         }
     }
-
-
 }
