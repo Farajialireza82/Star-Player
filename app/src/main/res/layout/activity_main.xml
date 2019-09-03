@@ -5,19 +5,18 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="629dp" >
-
-    </android.support.v7.widget.RecyclerView>
+        android:layout_height="match_parent"
+        android:layout_above="@+id/logs"/>
 
     <TextView
         android:id="@+id/logs"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="60dp"
         android:text="TextView"
         android:textColor="#000"
         android:textSize="20sp"
-        android:gravity="fill"
-        android:layout_below="@id/recycler_view"/>
+        android:layout_alignParentBottom="true"
+        android:gravity="fill"/>
 
 
 </RelativeLayout>
