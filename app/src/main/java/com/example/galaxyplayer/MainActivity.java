@@ -50,13 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
     GridLayoutManager gridlayoutManager;
 
+    TextView userGreetings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userGreetings = findViewById(R.id.main_activity_user_greeting);
+
         play = true;
+
 
         Log.i("activity0101", "We Should see a start text");
 
@@ -78,7 +83,19 @@ public class MainActivity extends AppCompatActivity {
 
         songUrls.setAdapter(recyclerViewAdapter);
 
+        String userName;
 
+        Bundle extras = getIntent().getExtras();
+
+        if(extras != null) {
+
+            userName = extras.getString("name", "Boss");
+
+            userGreetings.setText("Welcome " + userName);
+
+        }else{
+            userGreetings.setText("Hello");
+        }
     }
 
     @Override
@@ -192,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
 
             Integer i = 0;
 
-             viewAdapter = adapters[0];
+            viewAdapter = adapters[0];
 
             //activity.logs.setText("permission checked");
 
@@ -216,17 +233,17 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
 
-                          //  activity.logs.setText("getting music");
+                            //  activity.logs.setText("getting music");
 
                             Log.i("activity0101", " we should see a getting music text in the log text ");
 
                             String songTitle = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
 
-                             title = songTitle.replaceAll(".mp3", "");
+                            title = songTitle.replaceAll(".mp3", "");
 
                             music.setTitle(title);
 
-                          //  activity.logs.setText("title added ");
+                            //  activity.logs.setText("title added ");
 
                             Log.i("activity0101", " we should see a title added text in the log text ");
 
@@ -240,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.i("activity0101", " there was an Exeption while setting the title ");
 
 
-                         //   activity.logs.setText("error at setting song title " + e.toString());
+                            //   activity.logs.setText("error at setting song title " + e.toString());
 
                             Log.i("activity0101", " we should see a error in the log text ");
 
@@ -257,12 +274,12 @@ public class MainActivity extends AppCompatActivity {
 
                         music.setPath(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)));
 
-                      //  activity.logs.setText("music path set");
+                        //  activity.logs.setText("music path set");
 
                         Log.i("activity0101", " we should see music path set text in the log text ");
 
 
-                      //  activity.logs.setText("music added in list");
+                        //  activity.logs.setText("music added in list");
 
                         Log.i("activity0101", " we should see music added set text in the log text ");
 
