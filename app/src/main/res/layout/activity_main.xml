@@ -2,34 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
- <!--   <TextView
+    <TextView
         android:id="@+id/main_activity_user_greeting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Hello Dear Users"
         android:textSize="30dp"
         android:textColor="#000"
-        android:gravity="center"/>-->
+        android:gravity="center"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/main_activity_user_greeting">
     </android.support.v7.widget.RecyclerView>
 
 
         android:layout_height="match_parent"
         android:layout_above="@+id/logs"/>
-
-    <TextView
-        android:id="@+id/logs"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="TextView"
-        android:textColor="#000"
-        android:textSize="20sp"
-        android:layout_alignParentBottom="true"
-        android:gravity="fill"/>
-
-
 </RelativeLayout>
