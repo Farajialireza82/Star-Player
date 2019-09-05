@@ -45,7 +45,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (nameEditText.getText() == null) {
+                if (nameEditText.getText().length() <= 0) {
 
                     Toast.makeText(LoginActivity.this, "Please Enter your name", Toast.LENGTH_LONG).show();
 
