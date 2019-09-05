@@ -46,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView songUrls;
 
-    TextView logs;
-
     LinearLayoutManager manager;
 
     GridLayoutManager gridlayoutManager;
@@ -60,11 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         play = true;
 
-        logs = findViewById(R.id.logs);
-
         Log.i("activity0101", "We Should see a start text");
-
-        logs.setText("App Started");
 
         songUrls = findViewById(R.id.recycler_view);
 
