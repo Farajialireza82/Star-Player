@@ -52,15 +52,18 @@ public class MainActivity extends AppCompatActivity {
 
     GridLayoutManager gridlayoutManager;
 
+    TextView userGreetings;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userGreetings = findViewById(R.id.main_activity_user_greeting);
+
         play = true;
 
-        logs = findViewById(R.id.logs);
 
         Log.i("activity0101", "We Should see a start text");
 
@@ -84,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
         songUrls.setAdapter(recyclerViewAdapter);
 
+        String userName;
+
+
+        Bundle extras = getIntent().getExtras();
+
+
+        userName = extras.getString("name" , "Boss");
+
+        userGreetings.setText("Welcome " + userName);
 
     }
 
