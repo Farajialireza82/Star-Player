@@ -2,6 +2,7 @@ package com.example.galaxyplayer;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 
 import java.net.URI;
 
@@ -39,5 +40,9 @@ public class MusicModel {
         this.title = title;
     }
 
-
+    @NonNull
+    @Override
+    public String toString() {
+        return "name : " + title + " path : " + path;
+    }
 }

@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     public static boolean play;
 
-
     ArrayList<String> songNames;
 
     ArrayList<MusicModel> songs;
@@ -46,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerViewAdapter recyclerViewAdapter;
 
     RecyclerView songUrls;
-
-    TextView logs;
 
     LinearLayoutManager manager;
 
@@ -61,11 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
         play = true;
 
-        logs = findViewById(R.id.logs);
-
         Log.i("activity0101", "We Should see a start text");
-
-        logs.setText("App Started");
 
         songUrls = findViewById(R.id.recycler_view);
 
@@ -85,13 +78,20 @@ public class MainActivity extends AppCompatActivity {
 
         songUrls.setAdapter(recyclerViewAdapter);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         if (checkPermissionREAD_EXTERNAL_STORAGE(this)) {
 
             Log.i("activity0101", "music setter may start now");
 
-            AsyncTaskMusicSeter musicSeter = new AsyncTaskMusicSeter(this);
+            AsyncTaskMusicSeter musicSetter = new AsyncTaskMusicSeter(this);
 
-            musicSeter.execute(recyclerViewAdapter);
+            musicSetter.execute(recyclerViewAdapter);
 
             Log.i("activity0101", "we should see the song list");
 
@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, "In order to load your musics , App needs Access to You Data", Toast.LENGTH_LONG).show();
 
         }
-
 
     }
 
@@ -173,9 +172,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public class AsyncTaskMusicSeter extends android.os.AsyncTask<RecyclerViewAdapter, Integer, String> {
+    public class AsyncTaskMusicSeter extends android.os.AsyncTask<RecyclerViewAdapter, PostMan, RecyclerViewAdapter> {
 
         private WeakReference<MainActivity> activityWeakReference;
+        RecyclerViewAdapter viewAdapter;
+        String title;
+        MusicModel deliverer;
+
+
 
         AsyncTaskMusicSeter(MainActivity activity) {
 
@@ -184,15 +188,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String doInBackground(RecyclerViewAdapter... adapters) {
-
-            MainActivity activity = activityWeakReference.get();
+        protected RecyclerViewAdapter doInBackground(RecyclerViewAdapter... adapters) {
 
             Integer i = 0;
 
-            RecyclerViewAdapter viewAdapter = adapters[0];
+             viewAdapter = adapters[0];
 
-            activity.logs.setText("permission checked");
+            //activity.logs.setText("permission checked");
 
             Log.i("activity0101", "we should see a permission text in log text");
 
@@ -214,28 +216,31 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
 
-                            activity.logs.setText("getting music");
+                          //  activity.logs.setText("getting music");
 
                             Log.i("activity0101", " we should see a getting music text in the log text ");
 
                             String songTitle = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
 
-                            String title = songTitle.replaceAll(".mp3", "");
+                             title = songTitle.replaceAll(".mp3", "");
 
                             music.setTitle(title);
 
-                            activity.logs.setText("title added ");
+                          //  activity.logs.setText("title added ");
 
                             Log.i("activity0101", " we should see a title added text in the log text ");
 
+                            PostMan postMan = new PostMan();
+                            postMan.setStatus("add_title");
 
-                            activity.songNames.add(title);
+                            publishProgress(postMan);
+
                         } catch (Exception e) {
 
                             Log.i("activity0101", " there was an Exeption while setting the title ");
 
 
-                            activity.logs.setText("error at setting song title " + e.toString());
+                         //   activity.logs.setText("error at setting song title " + e.toString());
 
                             Log.i("activity0101", " we should see a error in the log text ");
 
@@ -243,22 +248,33 @@ public class MainActivity extends AppCompatActivity {
 
                             music.setTitle("Unknown");
 
-                            activity.songNames.add("Unknown");
+                            PostMan postMan = new PostMan();
+                            postMan.setStatus("title_un");
+
+                            publishProgress(postMan);
 
                         }
 
                         music.setPath(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)));
 
-                        activity.logs.setText("music path set");
+                      //  activity.logs.setText("music path set");
 
                         Log.i("activity0101", " we should see music path set text in the log text ");
 
 
-                        activity.logs.setText("music added in list");
+                      //  activity.logs.setText("music added in list");
 
                         Log.i("activity0101", " we should see music added set text in the log text ");
 
-                        activity.songs.add(music);
+                        Log.i("do_in_background" , "final song : " + music.toString());
+
+                        Log.i("do_in_background" , "final deliverer : " + music.toString());
+
+                        PostMan postMan = new PostMan();
+                        postMan.setStatus("add_song");
+                        postMan.setMusicModel(music);
+
+                        publishProgress(postMan);
 
                         i++;
 
@@ -269,12 +285,84 @@ public class MainActivity extends AppCompatActivity {
             audioCursor.close();
 
 
-            viewAdapter.notifyDataSetChanged();
-
             if (i == 0) {
-                activity.logs.setText("No Music found");
+
+
+                PostMan postMan = new PostMan();
+                postMan.setStatus("no_songs");
+                publishProgress(postMan);
+
+                //activity.logs.setText("No Music found");
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(RecyclerViewAdapter recyclerViewAdapter) {
+            super.onPostExecute(recyclerViewAdapter);
+
+            viewAdapter.notifyDataSetChanged();
+
+        }
+
+        @Override
+        protected void onProgressUpdate(PostMan... values) {
+            super.onProgressUpdate(values);
+
+            MainActivity activity = activityWeakReference.get();
+
+
+            if(values[0].getStatus() == "add_title"){
+
+                Log.i("onProgressLogs" , "add_title + " +  title);
+                activity.songNames.add(title);
+
+            }
+
+            if(values[0].getStatus() == "title_un"){
+
+                Log.i("onProgressLogs" , "unknown title + " +  title);
+
+
+                activity.songNames.add("unknown");
+
+            }
+
+            if(values[0].getStatus() == "add_song"){
+
+                Log.i("do_in_background" , "final value[0].getMusicModel in progress : " + values[0].getMusicModel());
+                activity.songs.add(values[0].getMusicModel());
+
+            }
+
+            if(values[0].getStatus() == "no_songs"){
+
+                Toast.makeText(activity, "No songs were found", Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        }
+    }
+    public class PostMan {
+
+        String status;
+        MusicModel musicModel;
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public MusicModel getMusicModel() {
+            return musicModel;
+        }
+
+        public void setMusicModel(MusicModel musicModel) {
+            this.musicModel = musicModel;
         }
     }
 }
