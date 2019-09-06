@@ -2,50 +2,19 @@ package com.example.galaxyplayer;
 
 
 import android.annotation.SuppressLint;
-import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ExtractorsFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
-import com.google.android.exoplayer2.upstream.DataSource;
-import com.google.android.exoplayer2.upstream.DataSpec;
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
-import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
-import com.google.android.exoplayer2.upstream.FileDataSource;
-import com.google.android.exoplayer2.util.Util;
-import com.google.gson.Gson;
-
-import java.io.File;
-import java.net.URI;
-import java.net.URL;
 
 public class PlayActivity extends AppCompatActivity {
 
@@ -62,8 +31,6 @@ public class PlayActivity extends AppCompatActivity {
     String name;
 
     String value;
-
-    String path;
 
     final ServiceConnection connection = new ServiceConnection() {
 
@@ -124,12 +91,6 @@ public class PlayActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_music);
         playerView = findViewById(R.id.exoPlayerView);
-
-        name = new String();
-
-        value = new String();
-
-        path = new String();
 
 
         Bundle extras = getIntent().getExtras();
@@ -195,25 +156,6 @@ public class PlayActivity extends AppCompatActivity {
         exoPlayer = null;
         playerView.setPlayer(null);
 
-    }
-
-
-    private void pausePlayer() {
-        exoPlayer.setPlayWhenReady(false);
-        exoPlayer.getPlaybackState();
-    }
-
-
-    private void stopPlayer() {
-        exoPlayer.setPlayWhenReady(false);
-        exoPlayer.getPlaybackState();
-        exoPlayer = null;
-
-    }
-
-    private void startPlayer() {
-        exoPlayer.setPlayWhenReady(true);
-        exoPlayer.getPlaybackState();
     }
 
 

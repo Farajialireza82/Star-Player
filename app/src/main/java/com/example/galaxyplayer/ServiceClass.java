@@ -11,8 +11,10 @@ import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.media.app.NotificationCompat;
+
 import android.support.v4.media.session.MediaSessionCompat;
 import android.widget.Toast;
 
@@ -42,7 +44,6 @@ public class ServiceClass extends Service {
     public static final String ACTION_DISLIKED = "action_disliked";
 
     public static ArrayList<String> disLikedSongs = new ArrayList<>();
-    public static ArrayList<String> likedSongs = new ArrayList<>();
 
 
     public static final int REQUEST_CODE_NOTIFICATION = 1;
@@ -55,7 +56,7 @@ public class ServiceClass extends Service {
 
     IBinder videoServiceBinder = new VideoServiceBinder();
 
-    private MediaSessionCompat mediaSession;
+    public MediaSessionCompat mediaSession;
 
     public static Intent createIntent(Context context, String action) {
         Intent intent = new Intent(context, ServiceClass.class);
@@ -150,9 +151,9 @@ public class ServiceClass extends Service {
 
     }
 
-    public class VideoServiceBinder extends Binder {
+     class VideoServiceBinder extends Binder {
 
-        public ExoPlayer getExoPlayerInstance() {
+         ExoPlayer getExoPlayerInstance() {
 
             return exoPlayer;
 
@@ -210,12 +211,6 @@ public class ServiceClass extends Service {
                 ServiceClass.createIntent(this, ACTION_LIKED),
                 0
         );
-        PendingIntent dislikedSong = PendingIntent.getService(
-                this,
-                REQUEST_CODE_NOTIFICATION,
-                ServiceClass.createIntent(this, ACTION_DISLIKED),
-                0
-        );
 
 
         mediaSession = new MediaSessionCompat(this, "tag");
@@ -230,7 +225,7 @@ public class ServiceClass extends Service {
                 .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
                 .addAction(R.drawable.ic_like_black_24dp, "Like", likedSong)
-                .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
+                .setStyle(new NotificationCompat.MediaStyle()
                         .setShowActionsInCompactView(1, 2, 3)
                         .setMediaSession(mediaSession.getSessionToken()))
                 .setSubText(name)

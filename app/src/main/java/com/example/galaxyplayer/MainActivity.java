@@ -8,26 +8,20 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
@@ -91,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
             userName = extras.getString("name", "Boss");
 
-            userGreetings.setText("Welcome " + userName);
+            userGreetings.setText("welcome" + userName);
 
         }else{
             userGreetings.setText("Hello");
@@ -176,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //setmusicsOnRecyclerBar();
 
                 } else {
                     Toast.makeText(this, "Access Denied", Toast.LENGTH_SHORT).show();

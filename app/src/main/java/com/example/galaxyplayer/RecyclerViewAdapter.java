@@ -2,31 +2,23 @@ package com.example.galaxyplayer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-
-import java.io.File;
-import java.net.URI;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
     private List<MusicModel> songs;
 
-    public RecyclerViewAdapter(List<MusicModel> songs) {
+     RecyclerViewAdapter(List<MusicModel> songs) {
         this.songs = songs;
     }
 
@@ -36,8 +28,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext()).
                 inflate(R.layout.recycler_view_holder, viewGroup, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        return new ViewHolder(view);
     }
 
     @Override
@@ -81,7 +72,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    public void set(MusicModel song , RecyclerViewAdapter.ViewHolder viewHolder) {
+    private void set(MusicModel song, RecyclerViewAdapter.ViewHolder viewHolder) {
 
         Context context = viewHolder.textView.getContext();
 
@@ -96,12 +87,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
         ImageView imageView;
 
-        public ViewHolder(@NonNull View itemView) {
+         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textView = itemView.findViewById(R.id.song_url);
