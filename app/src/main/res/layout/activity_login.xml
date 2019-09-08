@@ -6,7 +6,7 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Enter_your_name_pls"
+        android:text="Please Enter your name "
         android:textColor="#000"
         android:textSize="30sp"
         android:gravity="center"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/greetings_text"
         android:layout_marginTop="2dp"
-        android:text="@string/press_the_button_pls"
+        android:text="and then press the button below"
         android:textSize="25sp"
         android:textColor="#000"
         android:gravity="center"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/greetings_text"
         android:layout_marginTop="86dp"
-        android:hint="@string/name"
+        android:hint="Name"
         android:textColor="#000"
         android:textSize="16sp"
         android:id="@+id/nameEditText"/>
@@ -39,7 +39,7 @@
         android:id="@+id/EnterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/enter"
+        android:text="Enter"
         android:layout_below="@id/nameEditText"
         android:layout_margin="150dp"
         />
