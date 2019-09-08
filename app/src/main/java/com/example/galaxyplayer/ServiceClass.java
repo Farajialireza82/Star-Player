@@ -13,11 +13,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-import androidx.media.app.NotificationCompat;
-
 import android.support.v4.media.session.MediaSessionCompat;
 import android.widget.Toast;
-
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -205,32 +202,23 @@ public class ServiceClass extends Service {
                 ServiceClass.createIntent(this, ACTION_PLAY_PAUSE),
                 0
         );
-        PendingIntent likedSong = PendingIntent.getService(
-                this,
-                REQUEST_CODE_NOTIFICATION,
-                ServiceClass.createIntent(this, ACTION_LIKED),
-                0
-        );
+
 
 
         mediaSession = new MediaSessionCompat(this, "tag");
         Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
+
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setSmallIcon(R.drawable.exo_controls_play)
-                .setContentTitle("Galaxy Player")
-                .setLargeIcon(picture)
-                .setContentText(title)
-                .addAction(R.drawable.ic_dislike_black_24dp, "Dislike", null)
-                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
-                .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
-                .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
-                .addAction(R.drawable.ic_like_black_24dp, "Like", likedSong)
-                .setStyle(new NotificationCompat.MediaStyle()
-                        .setShowActionsInCompactView(1, 2, 3)
-                        .setMediaSession(mediaSession.getSessionToken()))
-                .setSubText(name)
-                .setPriority(NotificationCompat.PRIORITY_LOW)
-                .build();
+                    .setSmallIcon(R.drawable.exo_controls_play)
+                    .setContentTitle("Galaxy Player")
+                    .setLargeIcon(picture)
+                    .setContentText(title)
+                    .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
+                    .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
+                    .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
+                    .setSubText(name)
+                    .setPriority(NotificationCompat.PRIORITY_LOW)
+                    .build();
 
         startForeground(1, notification);
     }

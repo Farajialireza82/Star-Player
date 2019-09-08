@@ -10,6 +10,9 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.provider.MediaStore;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,13 +23,13 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-
+public class MainActivity extends AppCompatActivity{
 
     public static boolean play;
 
@@ -48,14 +51,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         userGreetings = findViewById(R.id.main_activity_user_greeting);
 
         play = true;
-
 
         Log.i("activity0101", "We Should see a start text");
 
@@ -85,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
 
             userName = extras.getString("name", "Boss");
 
-            userGreetings.setText("welcome" + userName);
+            userGreetings.setText("Welcome dear " + userName);
 
         }else{
             userGreetings.setText("Hello");
