@@ -6,19 +6,15 @@
         android:id="@+id/main_activity_user_greeting"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello Dear Users"
-        android:textSize="30dp"
+        android:text="@string/Hello_unknown_user"
+        android:textSize="30sp"
         android:textColor="#000"
         android:gravity="center"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/main_activity_user_greeting">
-    </android.support.v7.widget.RecyclerView>
-
-
-        android:layout_height="match_parent"
-        android:layout_above="@+id/logs"/>
+    </androidx.recyclerview.widget.RecyclerView>
 </RelativeLayout>

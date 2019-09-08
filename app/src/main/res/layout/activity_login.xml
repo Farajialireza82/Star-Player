@@ -3,12 +3,12 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please Enter Your Name"
+        android:text="@string/Enter_your_name_pls"
         android:textColor="#000"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:gravity="center"
         android:paddingTop="30dp"
         android:id="@+id/greetings_text"/>
@@ -19,27 +19,27 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/greetings_text"
         android:layout_marginTop="2dp"
-        android:text="And Then Press The Yellow Button Below"
-        android:textSize="25dp"
+        android:text="@string/press_the_button_pls"
+        android:textSize="25sp"
         android:textColor="#000"
         android:gravity="center"
         android:id="@+id/greetings_text2"/>
 
-    <android.support.design.widget.TextInputEditText
+    <com.google.android.material.textfield.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/greetings_text"
         android:layout_marginTop="86dp"
-        android:hint="Name"
+        android:hint="@string/name"
         android:textColor="#000"
-        android:textSize="@dimen/activity_horizontal_margin"
+        android:textSize="16sp"
         android:id="@+id/nameEditText"/>
 
     <Button
         android:id="@+id/EnterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enter"
+        android:text="@string/enter"
         android:layout_below="@id/nameEditText"
         android:layout_margin="150dp"
         />
