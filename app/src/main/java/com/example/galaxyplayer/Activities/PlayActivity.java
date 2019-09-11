@@ -1,3 +1,4 @@
+/*
 package com.example.galaxyplayer;
 
 
@@ -160,3 +161,4 @@ public class PlayActivity extends AppCompatActivity {
 
 
 }
+*/
