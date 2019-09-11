@@ -1,7 +1,5 @@
-package com.example.galaxyplayer;
+package com.example.galaxyplayer.Adapters;
 
-import android.content.Context;
-import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -12,9 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.Objects.MusicModel;
+import com.example.galaxyplayer.R;
 
 import java.util.List;
+
+import static com.example.galaxyplayer.Activities.MainActivityClass.PLAY_FRAGMENT;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
@@ -87,7 +89,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         MainActivityClass mainActivityClass = new MainActivityClass();
 
-       mainActivityClass.setViewPager(MainActivityClass.PLAY_FRAGMENT);
+        mainActivityClass.goToFragment(PLAY_FRAGMENT);
 
 
     }
