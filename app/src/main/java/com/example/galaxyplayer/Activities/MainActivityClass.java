@@ -1,103 +1,70 @@
-package com.example.galaxyplayer;
+package com.example.galaxyplayer.Activities;
 
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.galaxyplayer.Fragments.LoginFragment;
-import com.example.galaxyplayer.Fragments.PlayFragment;
-import com.example.galaxyplayer.Fragments.SongListFragment;
+import com.example.galaxyplayer.Adapters.SimpleSectionPagerAdapter;
+import com.example.galaxyplayer.R;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-public class MainActivityClass extends AppCompatActivity implements LoginFragment.LoginFragmentListener {
+public class MainActivityClass extends AppCompatActivity {
 
-    ViewPager viewPager ;
-    FrameLayout frameLayout;
-    SectionStatePageAdapter sectionStatePageAdapter;
+        ViewPager viewPager;
+        // public SectionPagerAdapter sectionPageAdapter;
+        public SimpleSectionPagerAdapter simpleSectionPagerAdapter;
 
-    private static final String TAG = "MainActivityClass";
+        private static final String TAG = "MainActivityClass";
 
-    public static final int SONG_LIST_FRAGMENT  = 0;
-    public static final int LOGIN_FRAGMENT = 1;
-    public static final int PLAY_FRAGMENT = 2;
+        public static final int SONG_LIST_FRAGMENT = 2;
+        public static final int LOGIN_FRAGMENT = 0;
+        public static final int PLAY_FRAGMENT = 1;
 
-    public static boolean permissionAllowed ;
-
-    public SongListFragment songListFragment;
-    public LoginFragment loginFragment;
-    public PlayFragment playFragment;
+        public static boolean permissionAllowed;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_layout);
 
-        //viewPager = findViewById(R.id.view_pager);
-        frameLayout = findViewById(R.id.container_main);
+
+        viewPager = findViewById(R.id.view_pager);
+
+        simpleSectionPagerAdapter = new SimpleSectionPagerAdapter(getSupportFragmentManager());
+
+        //sectionPageAdapter = new SectionPagerAdapter(getSupportFragmentManager());
+
+        viewPager.setAdapter(simpleSectionPagerAdapter);
+
+        Log.d(TAG, "onCreate: sectionPageAdapter set to viewPager");
 
 
-        songListFragment = new SongListFragment();
-        loginFragment = new LoginFragment();
-        playFragment = new PlayFragment();
-        Log.d(TAG, "onCreate: fragments newed");
+        Log.d(TAG, "onCreate: Opening Login Fragment");
 
-        sectionStatePageAdapter = new SectionStatePageAdapter(getSupportFragmentManager());
-
-        Log.d(TAG, "onCreate: sectionStatePageAdapter newd");
-
-        //setupViewPager(viewPager);
-
-        Log.d(TAG, "onCreate: viewPager set to setupViewPager");
-
-        //viewPager.setCurrentItem(LOGIN_FRAGMENT);
-
-        Log.d(TAG, "onCreate: we should now be in Login Fragment");
-
-        goToFragment(loginFragment);
+        goToFragment(SONG_LIST_FRAGMENT);
 
         permissionAllowed = checkPermissionREAD_EXTERNAL_STORAGE(this);
 
     }
 
-    private void setupViewPager(ViewPager viewPager){
+    public void goToFragment(int fragment) {
 
-        SectionStatePageAdapter adapter = new SectionStatePageAdapter(getSupportFragmentManager());
-
-        sectionStatePageAdapter.addFragment(songListFragment , "songListFragment");
-        sectionStatePageAdapter.addFragment(loginFragment , "loginFragment");
-        sectionStatePageAdapter.addFragment(playFragment , "playFragment");
-        viewPager.setAdapter(adapter);
+        simpleSectionPagerAdapter.getItem(fragment);
 
     }
 
-    public void goToFragment(Fragment fragment){
-        getSupportFragmentManager().beginTransaction()
-                .replace( R.id.container_main , fragment )
-                .commit();
-
-    }
-
-    public void setViewPager(int fragmentNumber){
-
-        viewPager.setCurrentItem(fragmentNumber);
-
-    }
 
     public final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 
@@ -166,8 +133,4 @@ public class MainActivityClass extends AppCompatActivity implements LoginFragmen
         }
     }
 
-    @Override
-    public void sendName(CharSequence input) {
-
-    }
 }
