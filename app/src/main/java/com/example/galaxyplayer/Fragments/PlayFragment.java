@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.example.galaxyplayer.R;
-import com.example.galaxyplayer.RecyclerViewAdapter;
-import com.example.galaxyplayer.ServiceClass;
+import com.example.galaxyplayer.Adapters.RecyclerViewAdapter;
+import com.example.galaxyplayer.Service.ServiceClass;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 import androidx.annotation.NonNull;
@@ -33,6 +33,8 @@ public class PlayFragment extends Fragment implements RecyclerViewAdapter.Recycl
     String name;
 
     String value;
+
+    private static final String TAG = "PlayFragment";
 
     final ServiceConnection connection = new ServiceConnection() {
 
@@ -108,6 +110,8 @@ public class PlayFragment extends Fragment implements RecyclerViewAdapter.Recycl
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_music , container , false);
 
+        Log.d(TAG, "onCreateView: Welcome to PlayFragment");
+        
         playerView = view.findViewById(R.id.exoPlayerView);
 
         getActivity().startService(

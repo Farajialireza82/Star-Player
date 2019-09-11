@@ -10,18 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.galaxyplayer.MainActivityClass;
+import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.example.galaxyplayer.Activities.MainActivityClass.SONG_LIST_FRAGMENT;
 
 public class LoginFragment extends Fragment {
 
     private EditText nameEditText;
-    private LoginFragmentListener loginFragmentListener;
 
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String NAME = "name";
@@ -34,9 +34,6 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
 
-    public interface LoginFragmentListener{
-        void sendName(CharSequence input);
-    }
 
 
     @Nullable
@@ -45,18 +42,10 @@ public class LoginFragment extends Fragment {
         View v = inflater.inflate(R.layout.activity_login , container , false);
 
         Log.d(TAG, "onCreateView: Welcome to LoginFragment");
-        
+
         nameEditText = v.findViewById(R.id.nameEditText);
-         enterButton = v.findViewById(R.id.EnterButton);
+        enterButton = v.findViewById(R.id.EnterButton);
 
-        loadData();
-
-        if (isLogin) {
-
-            loginFragmentListener.sendName(userName);
-
-            ((MainActivityClass)getActivity()).setViewPager(MainActivityClass.SONG_LIST_FRAGMENT);
-        }
 
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,37 +63,50 @@ public class LoginFragment extends Fragment {
 
                     loadData();
 
-                    loginFragmentListener.sendName(userName);
-
-                    ((MainActivityClass) getActivity()).goToFragment(new SongListFragment());
+                   ((MainActivityClass) getActivity()).goToFragment(SONG_LIST_FRAGMENT);
                 }
+
             }
         });
 
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        loadData();
+
+        if (isLogin) {
+
+            Log.d(TAG, "onResume: We should navigate to Song_List_Fragment ");
+
+            ((MainActivityClass)getActivity()).goToFragment(SONG_LIST_FRAGMENT);
 
 
+        }
+
+    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if(context instanceof LoginFragmentListener){
+        /*if(context instanceof LoginFragmentListener){
 
             loginFragmentListener = (LoginFragmentListener) context;
 
         }else {
             throw  new RuntimeException(context.toString() + " must implement loginFragmentListener");
-        }
+        }*/
 
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        loginFragmentListener = null;
+       // loginFragmentListener = null;
     }
 
     public void saveData() {
@@ -122,8 +124,12 @@ public class LoginFragment extends Fragment {
     public void loadData() {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         userName = sharedPreferences.getString(NAME , "");
+
+        Log.d(TAG, "loadData: username = " + userName);
+
         isLogin = sharedPreferences.getBoolean(IS_LOGIN, false);
 
+        Log.d(TAG, "loadData: isLogin = " + isLogin);
     }
 
 
