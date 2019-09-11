@@ -53,7 +53,7 @@ public class MainActivityClass extends AppCompatActivity {
 
         Log.d(TAG, "onCreate: Opening Login Fragment");
 
-        goToFragment(SONG_LIST_FRAGMENT);
+        goToFragment(LOGIN_FRAGMENT);
 
         permissionAllowed = checkPermissionREAD_EXTERNAL_STORAGE(this);
 
@@ -61,7 +61,7 @@ public class MainActivityClass extends AppCompatActivity {
 
     public void goToFragment(int fragment) {
 
-        simpleSectionPagerAdapter.getItem(fragment);
+        viewPager.setCurrentItem(fragment);
 
     }
 
