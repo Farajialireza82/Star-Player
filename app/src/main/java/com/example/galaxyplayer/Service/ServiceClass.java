@@ -1,4 +1,4 @@
-package com.example.galaxyplayer;
+package com.example.galaxyplayer.Service;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.widget.Toast;
+
+import com.example.galaxyplayer.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -26,7 +28,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
 import java.util.ArrayList;
 
-import static com.example.galaxyplayer.App.CHANNEL_ID;
+import static com.example.galaxyplayer.Service.App.CHANNEL_ID;
 
 public class ServiceClass extends Service {
 
@@ -148,9 +150,9 @@ public class ServiceClass extends Service {
 
     }
 
-     class VideoServiceBinder extends Binder {
+    public class VideoServiceBinder extends Binder {
 
-         ExoPlayer getExoPlayerInstance() {
+        public ExoPlayer getExoPlayerInstance() {
 
             return exoPlayer;
 
