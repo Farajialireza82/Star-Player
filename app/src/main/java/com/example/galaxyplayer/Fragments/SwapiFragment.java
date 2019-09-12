@@ -38,10 +38,9 @@ public class SwapiFragment extends Fragment {
         View view = inflater.inflate(R.layout.swapi_fragment, container, false);
 
 
-
-
         return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -71,19 +70,10 @@ public class SwapiFragment extends Fragment {
 
                 Log.d(TAG, "onResponse");
 
-                List<Person> personList = response.body().getResults();
 
-                for (int i = 0; i < personList.size(); i++) {
-
-                    Log.d(TAG, "onResponse: personList Result added to peopleInfo ArrayList " + personList.size());
-
-                    peopleInfo.add(personList.get(i).toString());
-
-
-                }
+                getPeopleInfo(response);
 
                 Log.d(TAG, "onCreateView: recyclerViewAdapter notifyDataSetChanged");
-
 
                 swapi_recyclerViewAdapter.notifyDataSetChanged();
 
@@ -101,11 +91,26 @@ public class SwapiFragment extends Fragment {
         });
 
 
-
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         Log.d(TAG, "onCreateView: recyclerView.setLayoutManager");
 
 
     }
+
+
+    public void getPeopleInfo(Response<People> response) {
+
+        List<Person> personList = response.body().getResults();
+
+        for (int i = 0; i < personList.size(); i++) {
+
+            Log.d(TAG, "onResponse: personList Result added to peopleInfo ArrayList " + personList.size());
+
+            peopleInfo.add(personList.get(i).toString());
+
+
+        }
+    }
+
 }
