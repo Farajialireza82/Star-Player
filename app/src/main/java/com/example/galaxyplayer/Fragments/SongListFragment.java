@@ -85,9 +85,9 @@ public class SongListFragment extends Fragment {
 
         Log.i("activity0101", "music setter may start now");
 
-        AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this);
+        AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this , recyclerViewAdapter);
 
-        musicSetter.execute(recyclerViewAdapter);
+        musicSetter.execute(view);
 
         Log.i("activity0101", "we should see the song list");
 
@@ -131,29 +131,34 @@ public class SongListFragment extends Fragment {
 
     }
 
-    public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapter, PostMan, RecyclerViewAdapter> {
+    public class AsyncTaskMusicSetter extends android.os.AsyncTask<View , PostMan, RecyclerViewAdapter> {
 
         private WeakReference<MainActivityClass> activityWeakReference;
         private WeakReference<SongListFragment> fragmentWeakReference;
+        private WeakReference<RecyclerViewAdapter> recyclerViewAdapterWeakReference;
         RecyclerViewAdapter viewAdapter;
         String title;
 
-        public AsyncTaskMusicSetter(MainActivityClass activity, SongListFragment fragment) {
+        public AsyncTaskMusicSetter(MainActivityClass activity, SongListFragment fragment , RecyclerViewAdapter adapter) {
 
             activityWeakReference = new WeakReference<>(activity);
 
             fragmentWeakReference = new WeakReference<>(fragment);
 
+            recyclerViewAdapterWeakReference = new WeakReference<>(adapter);
+
         }
 
         @Override
-        protected RecyclerViewAdapter doInBackground(RecyclerViewAdapter... adapters) {
+        protected RecyclerViewAdapter doInBackground(View... views) {
 
             MainActivityClass activity = activityWeakReference.get();
 
+            RecyclerViewAdapter adapter = recyclerViewAdapterWeakReference.get();
+
             Integer i = 0;
 
-            viewAdapter = adapters[0];
+            viewAdapter = adapter;
 
             //activity.logs.setText("permission checked");
 
@@ -372,9 +377,9 @@ public class SongListFragment extends Fragment {
 
                     Log.i("activity0101", "music setter may start now");
 
-                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this);
+                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this , recyclerViewAdapter);
 
-                    musicSetter.execute(recyclerViewAdapter);
+                    musicSetter.execute(view);
 
                     Log.i("activity0101", "we should see the song list");
 
