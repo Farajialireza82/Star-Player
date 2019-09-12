@@ -7,6 +7,15 @@
     <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/view_pager"/>
+        android:id="@+id/view_pager"
+        android:layout_below="@id/tabLayout_id"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabGravity="fill"
+        app:tabTextColor="#000"
+        android:id="@+id/tabLayout_id"
+        android:background="@color/colorPrimary"/>
 
 </RelativeLayout>
