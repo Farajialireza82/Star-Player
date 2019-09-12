@@ -95,8 +95,6 @@ public class SongListFragment extends Fragment  {
     public void onResume() {
         super.onResume();
 
-        if (permissionAllowed) {
-
             Log.i("activity0101", "music setter may start now");
 
             AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
@@ -105,10 +103,6 @@ public class SongListFragment extends Fragment  {
 
             Log.i("activity0101", "we should see the song list");
 
-        } else {
-
-            Toast.makeText(getActivity(), "In order to load your musics , App needs Access to You Data", Toast.LENGTH_LONG).show();
-        }
 
     }
 
