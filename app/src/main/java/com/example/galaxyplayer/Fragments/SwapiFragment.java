@@ -37,24 +37,45 @@ public class SwapiFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swapi_fragment, container, false);
 
+        Log.d(TAG, "onCreateView: SwapiFragment Started");
+
         recyclerView = view.findViewById(R.id.swapi_recyclerView);
+
+        final Swapi_RecyclerViewAdapter swapi_recyclerViewAdapter = new Swapi_RecyclerViewAdapter(peopleInfo);
+
+        Log.d(TAG, "onCreateView: adapter set to Recycler View");
+        
+        recyclerView.setAdapter(swapi_recyclerViewAdapter);
 
         SwapiClient swapiClient = ServiceGenerator.createService(SwapiClient.class);
 
+        Log.d(TAG, "onCreateView: swapiClient Created");
+
         Call<People> peopleCall = swapiClient.getPeople();
+
+        Log.d(TAG, "onCreateView: swapiClient.getPeople() called");
 
         peopleCall.enqueue(new Callback<People>() {
             @Override
             public void onResponse(Call<People> call, Response<People> response) {
 
+                Log.d(TAG, "onResponse");
+
                 List<Person> personList = response.body().getResults();
 
                 for (int i = 0; i < personList.size(); i++) {
+
+                    Log.d(TAG, "onResponse: personList Result added to peopleInfo ArrayList " + personList.size());
 
                     peopleInfo.add(personList.get(i).toString());
 
 
                 }
+
+                Log.d(TAG, "onCreateView: recyclerViewAdapter notifyDataSetChanged");
+
+
+                swapi_recyclerViewAdapter.notifyDataSetChanged();
 
 
             }
@@ -70,7 +91,10 @@ public class SwapiFragment extends Fragment {
         });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new Swapi_RecyclerViewAdapter(peopleInfo));
+
+        Log.d(TAG, "onCreateView: recyclerView.setLayoutManager");
+        
+
 
 
         return view;
