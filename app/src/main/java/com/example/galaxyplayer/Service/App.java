@@ -1,4 +1,4 @@
-package com.example.galaxyplayer;
+package com.example.galaxyplayer.Service;
 
 import android.app.Application;
 import android.app.NotificationChannel;
@@ -15,16 +15,16 @@ public class App extends Application {
 
         super.onCreate();
 
-        createNotificationChannel();
+        createNotificationChannel("Galaxy Player");
     }
 
 
-    private void createNotificationChannel() {
+    private void createNotificationChannel(String channel_name) {
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Service Channel"
+                    channel_name
                     , NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);

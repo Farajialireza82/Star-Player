@@ -1,3 +1,4 @@
+/*
 package com.example.galaxyplayer;
 
 import android.content.Intent;
@@ -88,3 +89,4 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 }
+*/
