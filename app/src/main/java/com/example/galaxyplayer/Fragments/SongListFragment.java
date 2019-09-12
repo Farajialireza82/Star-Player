@@ -1,7 +1,14 @@
 package com.example.galaxyplayer.Fragments;
 
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import  android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -19,6 +26,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,13 +59,40 @@ public class SongListFragment extends Fragment  {
 
     String userName;
 
+    View view;
+
     private static final String TAG = "SongListFragment";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_main , container , false);
+        view = inflater.inflate(R.layout.activity_main , container , false);
+
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+            Log.i("activity0101", "music setter may start now");
+
+            AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
+
+            musicSetter.execute(recyclerViewAdapter);
+
+            Log.i("activity0101", "we should see the song list");
+
+
+
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Log.d(TAG, "onCreateView: Welcome to SongListFragment class");
 
@@ -88,27 +124,10 @@ public class SongListFragment extends Fragment  {
 
         userGreetings.setText("Welcome Dear " + userName);
 
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-            Log.i("activity0101", "music setter may start now");
-
-            AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
-
-            musicSetter.execute(recyclerViewAdapter);
-
-            Log.i("activity0101", "we should see the song list");
-
 
     }
 
-
-
-public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapter, PostMan, RecyclerViewAdapter> {
+    public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapter, PostMan, RecyclerViewAdapter> {
 
         private WeakReference<MainActivityClass> activityWeakReference;
         private WeakReference<SongListFragment> fragmentWeakReference;
@@ -289,6 +308,82 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
 
             }
 
+        }
+    }
+
+    public final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    showDialog("External storage", context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialog(final String msg, final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[]{permission},
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i("activity0101", "music setter may start now");
+
+                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
+
+                    musicSetter.execute(recyclerViewAdapter);
+
+                    Log.i("activity0101", "we should see the song list");
+
+
+                } else {
+                    Toast.makeText(getContext() , "Access Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,
+                        grantResults);
         }
     }
 
