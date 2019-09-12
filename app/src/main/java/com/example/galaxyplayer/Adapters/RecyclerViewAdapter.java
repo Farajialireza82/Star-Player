@@ -1,5 +1,6 @@
 package com.example.galaxyplayer.Adapters;
 
+import android.content.Intent;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import androidx.annotation.NonNull;
@@ -11,26 +12,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.galaxyplayer.Activities.MainActivityClass;
+import com.example.galaxyplayer.Activities.PlayActivity;
 import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.R;
-
 import java.util.List;
 
-import static com.example.galaxyplayer.Activities.MainActivityClass.PLAY_FRAGMENT;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
      private List<MusicModel> songs;
-     RecyclerAdapterListener recyclerAdapterListener;
 
      public RecyclerViewAdapter(List<MusicModel> songs) {
         this.songs = songs;
     }
 
-    public interface RecyclerAdapterListener{
-         void sendSongPath(String songPath);
-         void sendSongTitle(String songTitle);
-    }
 
     @NonNull
     @Override
@@ -82,14 +77,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     private void set(MusicModel song, RecyclerViewAdapter.ViewHolder viewHolder) {
-
-
-        recyclerAdapterListener.sendSongPath(song.getPath());
-        recyclerAdapterListener.sendSongTitle(song.getTitle());
-
         MainActivityClass mainActivityClass = new MainActivityClass();
 
-        mainActivityClass.goToFragment(PLAY_FRAGMENT);
+        Intent intent = new Intent(viewHolder.textView.getContext() , PlayActivity.class);
+
+        intent.putExtra("key" , song.getPath());
+        intent.putExtra("name" , song.getTitle());
+
+        viewHolder.imageView.getContext().startActivity(intent);
 
 
     }

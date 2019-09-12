@@ -1,6 +1,14 @@
 package com.example.galaxyplayer.Fragments;
 
-import  android.database.Cursor;
+import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -15,18 +23,25 @@ import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.Objects.PostMan;
 import com.example.galaxyplayer.R;
 import com.example.galaxyplayer.Adapters.RecyclerViewAdapter;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.galaxyplayer.Activities.MainActivityClass.permissionAllowed;
+import static com.example.galaxyplayer.Fragments.LoginFragment.NAME;
+import static com.example.galaxyplayer.Fragments.LoginFragment.SHARED_PREFS;
 
-public class SongListFragment extends Fragment  {
+public class SongListFragment extends Fragment {
 
     public static boolean play;
 
@@ -48,13 +63,40 @@ public class SongListFragment extends Fragment  {
 
     String userName;
 
+    View view;
+
     private static final String TAG = "SongListFragment";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_main , container , false);
+        view = inflater.inflate(R.layout.activity_main, container, false);
+
+
+        return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(checkPermissionREAD_EXTERNAL_STORAGE(userGreetings.getContext()))
+
+        Log.i("activity0101", "music setter may start now");
+
+        AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this , recyclerViewAdapter);
+
+        musicSetter.execute(view);
+
+        Log.i("activity0101", "we should see the song list");
+
+    }
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Log.d(TAG, "onCreateView: Welcome to SongListFragment class");
 
@@ -80,57 +122,43 @@ public class SongListFragment extends Fragment  {
 
         songUrls.setAdapter(recyclerViewAdapter);
 
+        SharedPreferences sharedPreferences = userGreetings.getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        userName = sharedPreferences.getString(NAME, "");
+
         userGreetings.setText("Welcome Dear " + userName);
 
-        return view;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if (permissionAllowed) {
-
-            Log.i("activity0101", "music setter may start now");
-
-            AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
-
-            musicSetter.execute(recyclerViewAdapter);
-
-            Log.i("activity0101", "we should see the song list");
-
-        } else {
-
-            Toast.makeText(getActivity(), "In order to load your musics , App needs Access to You Data", Toast.LENGTH_LONG).show();
-        }
 
     }
 
-
-
-public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapter, PostMan, RecyclerViewAdapter> {
+    public class AsyncTaskMusicSetter extends android.os.AsyncTask<View , PostMan, RecyclerViewAdapter> {
 
         private WeakReference<MainActivityClass> activityWeakReference;
         private WeakReference<SongListFragment> fragmentWeakReference;
+        private WeakReference<RecyclerViewAdapter> recyclerViewAdapterWeakReference;
         RecyclerViewAdapter viewAdapter;
         String title;
 
-        public AsyncTaskMusicSetter(MainActivityClass activity , SongListFragment fragment) {
+        public AsyncTaskMusicSetter(MainActivityClass activity, SongListFragment fragment , RecyclerViewAdapter adapter) {
 
             activityWeakReference = new WeakReference<>(activity);
 
             fragmentWeakReference = new WeakReference<>(fragment);
 
+            recyclerViewAdapterWeakReference = new WeakReference<>(adapter);
+
         }
 
         @Override
-        protected RecyclerViewAdapter doInBackground(RecyclerViewAdapter... adapters) {
+        protected RecyclerViewAdapter doInBackground(View... views) {
 
             MainActivityClass activity = activityWeakReference.get();
 
+            RecyclerViewAdapter adapter = recyclerViewAdapterWeakReference.get();
+
             Integer i = 0;
 
-            viewAdapter = adapters[0];
+            viewAdapter = adapter;
 
             //activity.logs.setText("permission checked");
 
@@ -138,7 +166,7 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
 
             String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
 
-            Cursor audioCursor = activity.getContentResolver().query
+            Cursor audioCursor = getActivity().getContentResolver().query
 
                     (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
 
@@ -248,7 +276,6 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
             super.onProgressUpdate(values);
 
 
-
             SongListFragment songListFragment = fragmentWeakReference.get();
 
 
@@ -260,7 +287,6 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
                 songListFragment.songNames.add(title);
 
 
-
             }
 
             if (values[0].getStatus() == "title_un") {
@@ -268,7 +294,7 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
                 Log.i("onProgressLogs", "unknown title + " + title);
 
 
-               // activity.songListFragment.songNames.add("unknown");
+                // activity.songListFragment.songNames.add("unknown");
                 songListFragment.songNames.add("unknown");
 
             }
@@ -285,10 +311,86 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
 
             if (values[0].getStatus() == "no_songs") {
 
-                Toast.makeText(getActivity() , "No songs were found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "No songs were found", Toast.LENGTH_SHORT).show();
 
             }
 
+        }
+    }
+
+    public final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
+
+    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
+            final Context context) {
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        (Activity) context,
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    showDialog("External storage", context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE);
+
+                } else {
+                    ActivityCompat
+                            .requestPermissions(
+                                    (Activity) context,
+                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                }
+                return false;
+            } else {
+                return true;
+            }
+
+        } else {
+            return true;
+        }
+    }
+
+    public void showDialog(final String msg, final Context context,
+                           final String permission) {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+        alertBuilder.setCancelable(true);
+        alertBuilder.setTitle("Permission necessary");
+        alertBuilder.setMessage(msg + " permission is necessary");
+        alertBuilder.setPositiveButton(android.R.string.yes,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions((Activity) context,
+                                new String[]{permission},
+                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+                    }
+                });
+        AlertDialog alert = alertBuilder.create();
+        alert.show();
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.i("activity0101", "music setter may start now");
+
+                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this , recyclerViewAdapter);
+
+                    musicSetter.execute(view);
+
+                    Log.i("activity0101", "we should see the song list");
+
+
+                } else {
+                    Toast.makeText(userGreetings.getContext(), "Access Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions,
+                        grantResults);
         }
     }
 

@@ -10,14 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import static android.content.Context.MODE_PRIVATE;
-import static com.example.galaxyplayer.Activities.MainActivityClass.SONG_LIST_FRAGMENT;
 
 public class LoginFragment extends Fragment {
 
@@ -63,7 +62,13 @@ public class LoginFragment extends Fragment {
 
                     loadData();
 
-                   ((MainActivityClass) getActivity()).goToFragment(SONG_LIST_FRAGMENT);
+                    Fragment fragment = new SongListFragment();
+
+                    FragmentManager fm = getActivity().getSupportFragmentManager();
+                    FragmentTransaction transaction = fm.beginTransaction();
+                    transaction.replace(R.id.music_player_layout, fragment);
+                    transaction.commit();
+
                 }
 
             }
@@ -82,7 +87,12 @@ public class LoginFragment extends Fragment {
 
             Log.d(TAG, "onResume: We should navigate to Song_List_Fragment ");
 
-            ((MainActivityClass)getActivity()).goToFragment(SONG_LIST_FRAGMENT);
+            Fragment fragment = new SongListFragment();
+
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.music_player_layout, fragment);
+            transaction.commit();
 
 
         }
@@ -93,20 +103,11 @@ public class LoginFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        /*if(context instanceof LoginFragmentListener){
-
-            loginFragmentListener = (LoginFragmentListener) context;
-
-        }else {
-            throw  new RuntimeException(context.toString() + " must implement loginFragmentListener");
-        }*/
-
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-       // loginFragmentListener = null;
     }
 
     public void saveData() {
