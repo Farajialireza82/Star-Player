@@ -1,19 +1,9 @@
 package com.example.galaxyplayer.Adapters;
-
-import com.example.galaxyplayer.Activities.MainActivityClass;
-import com.example.galaxyplayer.Fragments.LoginFragment;
-import com.example.galaxyplayer.Fragments.PlayFragment;
-import com.example.galaxyplayer.Fragments.SongListFragment;
-
 import java.util.ArrayList;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
-import static com.example.galaxyplayer.Activities.MainActivityClass.LOGIN_FRAGMENT;
-import static com.example.galaxyplayer.Activities.MainActivityClass.SONG_LIST_FRAGMENT;
 
 public class SimpleSectionPagerAdapter extends FragmentPagerAdapter {
 
