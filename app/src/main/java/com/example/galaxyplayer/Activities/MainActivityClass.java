@@ -22,8 +22,7 @@ import androidx.viewpager.widget.ViewPager;
 
 public class MainActivityClass extends AppCompatActivity {
 
-        ViewPager viewPager;
-        // public SectionPagerAdapter sectionPageAdapter;
+        static ViewPager viewPager;
         public SimpleSectionPagerAdapter simpleSectionPagerAdapter;
 
         private static final String TAG = "MainActivityClass";
@@ -59,7 +58,7 @@ public class MainActivityClass extends AppCompatActivity {
 
     }
 
-    public void goToFragment(int fragment) {
+    public static void goToFragment(int fragment) {
 
         viewPager.setCurrentItem(fragment);
 
