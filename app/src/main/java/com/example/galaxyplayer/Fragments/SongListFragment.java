@@ -138,7 +138,7 @@ public class AsyncTaskMusicSetter extends android.os.AsyncTask<RecyclerViewAdapt
 
             String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
 
-            Cursor audioCursor = activity.getContentResolver().query
+            Cursor audioCursor = getActivity().getContentResolver().query
 
                     (MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
 
