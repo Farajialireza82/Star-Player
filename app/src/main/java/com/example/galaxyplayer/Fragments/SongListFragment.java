@@ -1,5 +1,6 @@
 package com.example.galaxyplayer.Fragments;
 
+import android.content.SharedPreferences;
 import  android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.Objects.PostMan;
@@ -23,8 +23,10 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.galaxyplayer.Activities.MainActivityClass.permissionAllowed;
+import static com.example.galaxyplayer.Fragments.LoginFragment.NAME;
+import static com.example.galaxyplayer.Fragments.LoginFragment.SHARED_PREFS;
 
 public class SongListFragment extends Fragment  {
 
@@ -79,6 +81,10 @@ public class SongListFragment extends Fragment  {
         recyclerViewAdapter = new RecyclerViewAdapter(songs);
 
         songUrls.setAdapter(recyclerViewAdapter);
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+
+        userName = sharedPreferences.getString(NAME , "");
 
         userGreetings.setText("Welcome Dear " + userName);
 
