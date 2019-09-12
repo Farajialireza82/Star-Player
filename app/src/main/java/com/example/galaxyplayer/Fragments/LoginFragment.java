@@ -10,14 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.R;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
@@ -71,7 +69,6 @@ public class LoginFragment extends Fragment {
                     transaction.replace(R.id.music_player_layout, fragment);
                     transaction.commit();
 
-                   //((MainActivityClass) getActivity()).goToFragment(SONG_LIST_FRAGMENT);
                 }
 
             }
