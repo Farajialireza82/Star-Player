@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import  android.database.Cursor;
+import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,13 +17,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.Objects.PostMan;
 import com.example.galaxyplayer.R;
 import com.example.galaxyplayer.Adapters.RecyclerViewAdapter;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -32,12 +35,13 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import static android.content.Context.MODE_PRIVATE;
 import static com.example.galaxyplayer.Activities.MainActivityClass.permissionAllowed;
 import static com.example.galaxyplayer.Fragments.LoginFragment.NAME;
 import static com.example.galaxyplayer.Fragments.LoginFragment.SHARED_PREFS;
 
-public class SongListFragment extends Fragment  {
+public class SongListFragment extends Fragment {
 
     public static boolean play;
 
@@ -67,7 +71,7 @@ public class SongListFragment extends Fragment  {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.activity_main , container , false);
+        view = inflater.inflate(R.layout.activity_main, container, false);
 
 
         return view;
@@ -77,18 +81,18 @@ public class SongListFragment extends Fragment  {
     public void onResume() {
         super.onResume();
 
-            Log.i("activity0101", "music setter may start now");
+        if(checkPermissionREAD_EXTERNAL_STORAGE(userGreetings.getContext()))
 
-            AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
+        Log.i("activity0101", "music setter may start now");
 
-            musicSetter.execute(recyclerViewAdapter);
+        AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this);
 
-            Log.i("activity0101", "we should see the song list");
+        musicSetter.execute(recyclerViewAdapter);
 
-
-
+        Log.i("activity0101", "we should see the song list");
 
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -118,9 +122,9 @@ public class SongListFragment extends Fragment  {
 
         songUrls.setAdapter(recyclerViewAdapter);
 
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = userGreetings.getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
-        userName = sharedPreferences.getString(NAME , "");
+        userName = sharedPreferences.getString(NAME, "");
 
         userGreetings.setText("Welcome Dear " + userName);
 
@@ -134,7 +138,7 @@ public class SongListFragment extends Fragment  {
         RecyclerViewAdapter viewAdapter;
         String title;
 
-        public AsyncTaskMusicSetter(MainActivityClass activity , SongListFragment fragment) {
+        public AsyncTaskMusicSetter(MainActivityClass activity, SongListFragment fragment) {
 
             activityWeakReference = new WeakReference<>(activity);
 
@@ -267,7 +271,6 @@ public class SongListFragment extends Fragment  {
             super.onProgressUpdate(values);
 
 
-
             SongListFragment songListFragment = fragmentWeakReference.get();
 
 
@@ -279,7 +282,6 @@ public class SongListFragment extends Fragment  {
                 songListFragment.songNames.add(title);
 
 
-
             }
 
             if (values[0].getStatus() == "title_un") {
@@ -287,7 +289,7 @@ public class SongListFragment extends Fragment  {
                 Log.i("onProgressLogs", "unknown title + " + title);
 
 
-               // activity.songListFragment.songNames.add("unknown");
+                // activity.songListFragment.songNames.add("unknown");
                 songListFragment.songNames.add("unknown");
 
             }
@@ -304,7 +306,7 @@ public class SongListFragment extends Fragment  {
 
             if (values[0].getStatus() == "no_songs") {
 
-                Toast.makeText(getActivity() , "No songs were found", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "No songs were found", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -370,7 +372,7 @@ public class SongListFragment extends Fragment  {
 
                     Log.i("activity0101", "music setter may start now");
 
-                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass() , this );
+                    AsyncTaskMusicSetter musicSetter = new AsyncTaskMusicSetter(new MainActivityClass(), this);
 
                     musicSetter.execute(recyclerViewAdapter);
 
@@ -378,7 +380,7 @@ public class SongListFragment extends Fragment  {
 
 
                 } else {
-                    Toast.makeText(getContext() , "Access Denied", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(userGreetings.getContext(), "Access Denied", Toast.LENGTH_SHORT).show();
                 }
                 break;
             default:
