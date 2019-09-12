@@ -1,5 +1,4 @@
-/*
-package com.example.galaxyplayer;
+package com.example.galaxyplayer.Activities;
 
 
 import android.annotation.SuppressLint;
@@ -14,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import com.example.galaxyplayer.R;
+import com.example.galaxyplayer.Service.ServiceClass;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
 
@@ -161,4 +163,3 @@ public class PlayActivity extends AppCompatActivity {
 
 
 }
-*/
