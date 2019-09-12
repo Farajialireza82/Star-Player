@@ -37,6 +37,16 @@ public class SwapiFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.swapi_fragment, container, false);
 
+
+
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         Log.d(TAG, "onCreateView: SwapiFragment Started");
 
         recyclerView = view.findViewById(R.id.swapi_recyclerView);
@@ -44,7 +54,7 @@ public class SwapiFragment extends Fragment {
         final Swapi_RecyclerViewAdapter swapi_recyclerViewAdapter = new Swapi_RecyclerViewAdapter(peopleInfo);
 
         Log.d(TAG, "onCreateView: adapter set to Recycler View");
-        
+
         recyclerView.setAdapter(swapi_recyclerViewAdapter);
 
         SwapiClient swapiClient = ServiceGenerator.createService(SwapiClient.class);
@@ -90,13 +100,12 @@ public class SwapiFragment extends Fragment {
             }
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         Log.d(TAG, "onCreateView: recyclerView.setLayoutManager");
-        
 
 
-
-        return view;
     }
 }
