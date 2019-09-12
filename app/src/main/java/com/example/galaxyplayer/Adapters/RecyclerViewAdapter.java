@@ -15,7 +15,6 @@ import com.example.galaxyplayer.Activities.MainActivityClass;
 import com.example.galaxyplayer.Activities.PlayActivity;
 import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.R;
-
 import java.util.List;
 
 
@@ -85,7 +84,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         intent.putExtra("key" , song.getPath());
         intent.putExtra("name" , song.getTitle());
 
-        mainActivityClass.startActivity(intent);
+        viewHolder.imageView.getContext().startActivity(intent);
 
 
     }
