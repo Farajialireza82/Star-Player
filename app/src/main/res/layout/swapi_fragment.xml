@@ -9,6 +9,7 @@
         android:text="Try Again"
         android:textSize="20sp"
         android:id="@+id/try_again_button"
+        android:layout_gravity="center"
         />
 
 
