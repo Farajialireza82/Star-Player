@@ -3,10 +3,22 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Try Again"
+        android:textSize="20sp"
+        android:id="@+id/try_again_button"
+        />
+
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swapi_recyclerView"
-        />
+        android:id="@+id/swapi_recyclerView"/>
+
+
+
 
 </LinearLayout>

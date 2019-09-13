@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.galaxyplayer.Adapters.Swapi_RecyclerViewAdapter;
@@ -14,6 +15,7 @@ import com.example.galaxyplayer.R;
 import com.example.galaxyplayer.Retrofit.ServiceGenerator;
 import com.example.galaxyplayer.Retrofit.SwapiClient;
 
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +32,8 @@ public class SwapiFragment extends Fragment {
 
     ArrayList<String> peopleInfo = new ArrayList<>();
     RecyclerView recyclerView;
+    Button tryAgainButton;
+
     private static final String TAG = "SwapiFragment";
 
     @Nullable
@@ -47,6 +51,10 @@ public class SwapiFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         Log.d(TAG, "onCreateView: SwapiFragment Started");
+
+        tryAgainButton = view.findViewById(R.id.try_again_button);
+
+        tryAgainButton.setVisibility(View.GONE);
 
         recyclerView = view.findViewById(R.id.swapi_recyclerView);
 
@@ -83,9 +91,19 @@ public class SwapiFragment extends Fragment {
             @Override
             public void onFailure(Call<People> call, Throwable t) {
 
+                if(t instanceof UnknownHostException){
+
+                    tryAgainButton.setVisibility(View.VISIBLE);
+
+                    Toast.makeText(recyclerView.getContext(), "Please check you Connection and try again", Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Toast.makeText(recyclerView.getContext() , "unknown Error" + t.toString() , Toast.LENGTH_LONG).show();
+                }
+
+
                 Log.d(TAG, "onFailure: Error " + t.toString());
 
-                Toast.makeText(getActivity(), "ERROR : " + t.toString(), Toast.LENGTH_SHORT).show();
 
             }
         });
@@ -94,6 +112,61 @@ public class SwapiFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         Log.d(TAG, "onCreateView: recyclerView.setLayoutManager");
+
+
+        tryAgainButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                tryAgainButton.setVisibility(View.GONE);
+
+                SwapiClient swapiClient = ServiceGenerator.createService(SwapiClient.class);
+
+                Log.d(TAG, "onCreateView: swapiClient Created");
+
+                Call<People> peopleCall = swapiClient.getPeople();
+
+                Log.d(TAG, "onCreateView: swapiClient.getPeople() called");
+
+                peopleCall.enqueue(new Callback<People>() {
+                    @Override
+                    public void onResponse(Call<People> call, Response<People> response) {
+
+                        Log.d(TAG, "onResponse");
+
+
+                        getPeopleInfo(response);
+
+                        Log.d(TAG, "onCreateView: recyclerViewAdapter notifyDataSetChanged");
+
+                        swapi_recyclerViewAdapter.notifyDataSetChanged();
+
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<People> call, Throwable t) {
+
+                        if(t instanceof UnknownHostException){
+
+                            tryAgainButton.setVisibility(View.VISIBLE);
+
+                            Toast.makeText(recyclerView.getContext(), "Please check you Connection and try again", Toast.LENGTH_LONG).show();
+
+                        }else{
+                            Toast.makeText(recyclerView.getContext() , "unknown Error" + t.toString() , Toast.LENGTH_LONG).show();
+                        }
+
+
+                        Log.d(TAG, "onFailure: Error " + t.toString());
+
+
+                    }
+                });
+
+
+            }
+        });
 
 
     }
