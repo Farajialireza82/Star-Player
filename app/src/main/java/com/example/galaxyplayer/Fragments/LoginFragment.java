@@ -52,7 +52,7 @@ public class LoginFragment extends Fragment {
 
                 if (nameEditText.getText().length() <= 0) {
 
-                    Toast.makeText(getContext(), " Please Enter your name ", Toast.LENGTH_LONG).show();
+                    nameEditText.setError("This field can not remain empty");
 
                 } else {
 
