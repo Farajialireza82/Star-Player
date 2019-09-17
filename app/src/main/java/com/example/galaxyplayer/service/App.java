@@ -1,4 +1,4 @@
-package com.example.galaxyplayer.Service;
+package com.example.galaxyplayer.service;
 
 import android.app.Application;
 import android.app.NotificationChannel;
