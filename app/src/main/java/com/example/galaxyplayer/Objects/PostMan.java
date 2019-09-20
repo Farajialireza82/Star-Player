@@ -21,4 +21,3 @@ public class PostMan {
         this.musicModel = musicModel;
     }
 }
-
