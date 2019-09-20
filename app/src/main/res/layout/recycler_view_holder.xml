@@ -7,42 +7,43 @@
 
 
 
-    <androidx.cardview.widget.CardView
+  <androidx.cardview.widget.CardView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:id="@+id/cardviewLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardUseCompatPadding="true">
+        android:layout_gravity="center"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <RelativeLayout
-            android:id="@+id/cardviewLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
+      <ImageView
+          android:contentDescription="@string/name"
+          android:id="@+id/music_cover"
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:scaleType="centerCrop"
+          android:src="@mipmap/ic_launcher" />
 
-            <ImageView
-                android:id="@+id/music_cover"
-                android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:scaleType="centerCrop"
-                android:src="@mipmap/ic_launcher" />
+      <TextView
+          android:id="@+id/song_url"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/music_cover"
+          android:layout_centerHorizontal="true"
+          android:gravity="center"
+          android:paddingTop="8dp"
+          android:textColor="#000"
+          android:textSize="13sp"
+          tools:text="Your Text"
+          />
 
-            <TextView
-                android:id="@+id/song_url"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/music_cover"
-                android:layout_centerHorizontal="true"
-                android:gravity="center"
-                android:paddingTop="8dp"
-                android:textColor="#000"
-                android:textSize="13sp"
-                tools:text="Your Text"
-                />
+    </RelativeLayout>
 
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
+  </androidx.cardview.widget.CardView>
 
 
 
