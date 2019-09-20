@@ -1,33 +1,36 @@
 package com.example.galaxyplayer.viewModel;
 
-import com.example.galaxyplayer.repositories.SwapiDataRepository;
+import android.app.Application;
 
-import java.util.List;
+import com.example.galaxyplayer.Objects.Person;
+import com.example.galaxyplayer.repositories.SwapiPeopleListRepository;
 
+import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-public class SwapiFragmentViewModel extends ViewModel {
+public class SwapiFragmentViewModel extends AndroidViewModel {
 
-    MutableLiveData<List<String>> stringsData;
-    public SwapiDataRepository swapiDataRepository = new SwapiDataRepository();
-
-    public void init() {
-
-        if (stringsData != null) {
-            return;
-        }
-
-        swapiDataRepository = SwapiDataRepository.getInstance();
-
-        stringsData = swapiDataRepository.getFinalArray();
+    public SwapiFragmentViewModel(@NonNull Application application) {
+        super(application);
     }
 
-    public LiveData<List<String>> getSwapiStringInfo() {
+    MutableLiveData<ArrayList<Person>> people;
 
-        return stringsData;
+    public void InitializeProcess(SwapiPeopleListRepository swapiPeopleListRepository) {
+
+        swapiPeopleListRepository = SwapiPeopleListRepository.getInstance();
+
+        people = swapiPeopleListRepository.getData(getApplication());
+
 
     }
 
+    public LiveData<ArrayList<Person>> reciveSongs() {
+
+        return people;
+    }
 }
