@@ -23,6 +23,7 @@ import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.Objects.PostMan;
 import com.example.galaxyplayer.R;
 import com.example.galaxyplayer.Adapters.RecyclerViewAdapter;
+import com.example.galaxyplayer.repositories.SongListRepo;
 import com.example.galaxyplayer.viewModel.SongListFragmentViewModel;
 
 import java.lang.ref.WeakReference;
@@ -116,31 +117,36 @@ public class SongListFragment extends Fragment {
 
         songs = new ArrayList<>();
 
-        recyclerViewAdapter = new RecyclerViewAdapter(songs);
-
-        songUrls.setAdapter(recyclerViewAdapter);
-
         SharedPreferences sharedPreferences = userGreetings.getContext().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
 
         userName = sharedPreferences.getString(NAME, "");
 
         userGreetings.setText("Welcome Dear " + userName);
 
+
         songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
 
-        songListFragmentViewModel.InitializeProcess();
+        SongListRepo songListRepo = new SongListRepo();
+
+        songListFragmentViewModel.InitializeProcess(songListRepo);
 
         songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
 
             @Override
             public void onChanged(ArrayList<MusicModel> musicModels) {
 
+               recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
+
+                songUrls.setAdapter(recyclerViewAdapter);
+
+                songUrls.setLayoutManager(gridlayoutManager);
+
                 recyclerViewAdapter.notifyDataSetChanged();
 
             }
         });
 
-        setupRecyclerView();
+      //  setupRecyclerView();
 
     }
 
