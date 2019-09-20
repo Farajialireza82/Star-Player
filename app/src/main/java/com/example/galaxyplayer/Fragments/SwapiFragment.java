@@ -5,34 +5,36 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Button;
-import android.widget.Toast;
 
+import com.example.galaxyplayer.Adapters.RecyclerViewAdapter;
 import com.example.galaxyplayer.Adapters.Swapi_RecyclerViewAdapter;
-import com.example.galaxyplayer.Objects.People;
+import com.example.galaxyplayer.Objects.MusicModel;
 import com.example.galaxyplayer.Objects.Person;
 import com.example.galaxyplayer.R;
-import com.example.galaxyplayer.Retrofit.ServiceGenerator;
-import com.example.galaxyplayer.Retrofit.SwapiClient;
+import com.example.galaxyplayer.repositories.SwapiPeopleListRepository;
+import com.example.galaxyplayer.viewModel.SwapiFragmentViewModel;
 
-import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class SwapiFragment extends Fragment {
 
-    ArrayList<String> peopleInfo = new ArrayList<>();
+    ArrayList<Person> peopleInfo = new ArrayList<>();
     RecyclerView recyclerView;
     Button tryAgainButton;
+    LinearLayoutManager layoutManager;
+    ArrayList <String> peopleList;
+    SwapiFragmentViewModel swapiFragmentViewModel;
+    Swapi_RecyclerViewAdapter swapi_recyclerViewAdapter;
 
     private static final String TAG = "SwapiFragment";
 
@@ -56,113 +58,56 @@ public class SwapiFragment extends Fragment {
 
         tryAgainButton.setVisibility(View.GONE);
 
+        peopleList = new ArrayList<>();
+
         recyclerView = view.findViewById(R.id.swapi_recyclerView);
 
-        final Swapi_RecyclerViewAdapter swapi_recyclerViewAdapter = new Swapi_RecyclerViewAdapter(peopleInfo);
+        layoutManager = new LinearLayoutManager(view.getContext());
 
-        Log.d(TAG, "onCreateView: adapter set to Recycler View");
+        recyclerView.setLayoutManager(layoutManager);
+
+        swapiFragmentViewModel = ViewModelProviders.of(this).get(SwapiFragmentViewModel.class);
+
+         swapi_recyclerViewAdapter = new Swapi_RecyclerViewAdapter(peopleList);
 
         recyclerView.setAdapter(swapi_recyclerViewAdapter);
 
-        SwapiClient swapiClient = ServiceGenerator.createService(SwapiClient.class);
+        swapi_recyclerViewAdapter.notifyDataSetChanged();
 
-        Log.d(TAG, "onCreateView: swapiClient Created");
+        SwapiPeopleListRepository swapiRepo = new SwapiPeopleListRepository();
 
-        Call<People> peopleCall = swapiClient.getPeople();
+        swapiFragmentViewModel.InitializeProcess(swapiRepo);
 
-        Log.d(TAG, "onCreateView: swapiClient.getPeople() called");
-
-        peopleCall.enqueue(new Callback<People>() {
+        swapiFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<Person>>() {
             @Override
-            public void onResponse(Call<People> call, Response<People> response) {
+            public void onChanged(ArrayList<Person> people) {
 
-                Log.d(TAG, "onResponse");
+                Log.d(TAG, "onChanged: people.size() = " + people.size());
 
 
-                getPeopleInfo(response);
+                for(int i = 0 ; i < people.size() ; i++){
 
-                Log.d(TAG, "onCreateView: recyclerViewAdapter notifyDataSetChanged");
+                    peopleList.add(people.get(i).getName());
+
+                    Log.d(TAG, "onChanged: people num & name " + i + " " + people.get(i).getName());
+
+                }
 
                 swapi_recyclerViewAdapter.notifyDataSetChanged();
 
 
-            }
-
-            @Override
-            public void onFailure(Call<People> call, Throwable t) {
-
-                if(t instanceof UnknownHostException){
-
-                    tryAgainButton.setVisibility(View.VISIBLE);
-
-                    Toast.makeText(recyclerView.getContext(), "Please check you Connection and try again", Toast.LENGTH_SHORT).show();
-
-                }else{
-                    Toast.makeText(recyclerView.getContext() , "unknown Error" + t.toString() , Toast.LENGTH_LONG).show();
-                }
-
-
-                Log.d(TAG, "onFailure: Error " + t.toString());
 
 
             }
         });
 
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-        Log.d(TAG, "onCreateView: recyclerView.setLayoutManager");
-
+        //setupRecyclerViewAdapter();
 
         tryAgainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                tryAgainButton.setVisibility(View.GONE);
-
-                SwapiClient swapiClient = ServiceGenerator.createService(SwapiClient.class);
-
-                Log.d(TAG, "onCreateView: swapiClient Created");
-
-                Call<People> peopleCall = swapiClient.getPeople();
-
-                Log.d(TAG, "onCreateView: swapiClient.getPeople() called");
-
-                peopleCall.enqueue(new Callback<People>() {
-                    @Override
-                    public void onResponse(Call<People> call, Response<People> response) {
-
-                        Log.d(TAG, "onResponse");
-
-
-                        getPeopleInfo(response);
-
-                        Log.d(TAG, "onCreateView: recyclerViewAdapter notifyDataSetChanged");
-
-                        swapi_recyclerViewAdapter.notifyDataSetChanged();
-
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<People> call, Throwable t) {
-
-                        if(t instanceof UnknownHostException){
-
-                            tryAgainButton.setVisibility(View.VISIBLE);
-
-                            Toast.makeText(recyclerView.getContext(), "Please check you Connection and try again", Toast.LENGTH_LONG).show();
-
-                        }else{
-                            Toast.makeText(recyclerView.getContext() , "unknown Error" + t.toString() , Toast.LENGTH_LONG).show();
-                        }
-
-
-                        Log.d(TAG, "onFailure: Error " + t.toString());
-
-
-                    }
-                });
+                hideTryAgainButton();
 
 
             }
@@ -172,18 +117,36 @@ public class SwapiFragment extends Fragment {
     }
 
 
-    public void getPeopleInfo(Response<People> response) {
+    public void showTryAgainButton() {
 
-        List<Person> personList = response.body().getResults();
+        tryAgainButton.setVisibility(View.VISIBLE);
 
-        for (int i = 0; i < personList.size(); i++) {
-
-            Log.d(TAG, "onResponse: personList Result added to peopleInfo ArrayList " + personList.size());
-
-            peopleInfo.add(personList.get(i).toString());
-
-
-        }
     }
+
+    public void hideTryAgainButton() {
+
+        tryAgainButton.setVisibility(View.GONE);
+
+
+    }
+
+  /*  public void setupRecyclerViewAdapter() {
+
+        ArrayList<Person> people = swapiFragmentViewModel.reciveSongs().getValue();
+
+        Log.d(TAG, "setupRecyclerViewAdapter: " + people.size());
+
+            swapi_recyclerViewAdapter = new Swapi_RecyclerViewAdapter( swapiFragmentViewModel.reciveSongs().getValue());
+
+            recyclerView.setLayoutManager(layoutManager);
+
+            recyclerView.setAdapter(swapi_recyclerViewAdapter);
+
+
+
+
+
+    }*/
+
 
 }
