@@ -1,4 +1,4 @@
-package com.example.galaxyplayer.Service;
+package com.example.galaxyplayer.service;
 
 import android.app.Notification;
 import android.app.PendingIntent;
@@ -28,7 +28,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
 import java.util.ArrayList;
 
-import static com.example.galaxyplayer.Service.App.CHANNEL_ID;
+import static com.example.galaxyplayer.service.App.CHANNEL_ID;
 
 public class ServiceClass extends Service {
 
