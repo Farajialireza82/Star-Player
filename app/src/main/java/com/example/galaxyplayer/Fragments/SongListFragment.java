@@ -72,7 +72,7 @@ public class SongListFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        view = inflater.inflate(R.layout.activity_main, container, false);
+        view = inflater.inflate(R.layout.ac, container, false);
 
 
 
