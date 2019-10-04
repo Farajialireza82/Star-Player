@@ -1,6 +1,5 @@
 package com.example.galaxyplayerkotlin.service
 
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
@@ -18,7 +17,6 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
 
     private val TAG = "FBSServiceClass"
 
-    private val RESET = "reset"
 
     override fun onCreate() {
         super.onCreate()
@@ -52,7 +50,7 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
 
         val intent = Intent(this, MainActivityClass::class.java)
 
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
 
         val pendingIntent = PendingIntent
 
