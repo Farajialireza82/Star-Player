@@ -5,17 +5,21 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
+
 import android.support.v4.media.session.MediaSessionCompat;
 import android.widget.Toast;
 
+import com.example.galaxyplayerkotlin.Fragments.LoginFragment;
 import com.example.galaxyplayerkotlin.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -41,6 +45,7 @@ public class ServiceClass extends Service {
     public static final String ACTION_PLAY_PAUSE = "action_play_pause";
     public static final String ACTION_LIKED = "action_liked";
     public static final String ACTION_DISLIKED = "action_disliked";
+    public static final String RESET_DATA = "reset_data";
 
     public static ArrayList<String> disLikedSongs = new ArrayList<>();
 
@@ -113,13 +118,25 @@ public class ServiceClass extends Service {
                 }
                 break;
             }
+            case RESET_DATA: {
+
+                SharedPreferences preferences = this.getSharedPreferences(LoginFragment.SHARED_PREFS, Context.MODE_PRIVATE);
+
+                SharedPreferences.Editor editor = preferences.edit();
+
+                editor.putBoolean(LoginFragment.IS_LOGIN, false);
+
+                editor.apply();
+
+                break;
+            }
             case ACTION_LIKED: {
 
                 Toast.makeText(this, "Song Added to Favorites list", Toast.LENGTH_SHORT).show();
                 break;
             }
 
-            case ACTION_DISLIKED : {
+            case ACTION_DISLIKED: {
 
                 Toast.makeText(this, "Song Added to Disliked list", Toast.LENGTH_SHORT).show();
 
@@ -206,21 +223,20 @@ public class ServiceClass extends Service {
         );
 
 
-
         mediaSession = new MediaSessionCompat(this, "tag");
         Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.exo_controls_play)
-                    .setContentTitle("Galaxy Player")
-                    .setLargeIcon(picture)
-                    .setContentText(title)
-                    .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
-                    .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
-                    .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
-                    .setSubText(name)
-                    .setPriority(NotificationCompat.PRIORITY_LOW)
-                    .build();
+                .setSmallIcon(R.drawable.exo_controls_play)
+                .setContentTitle("Galaxy Player")
+                .setLargeIcon(picture)
+                .setContentText(title)
+                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
+                .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
+                .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
+                .setSubText(name)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build();
 
         startForeground(1, notification);
     }
