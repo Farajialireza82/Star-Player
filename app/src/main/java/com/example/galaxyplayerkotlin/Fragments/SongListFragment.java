@@ -34,6 +34,8 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -75,8 +77,6 @@ public class SongListFragment extends Fragment {
         view = inflater.inflate(R.layout.activity_main, container, false);
 
 
-
-
         return view;
     }
 
@@ -96,10 +96,22 @@ public class SongListFragment extends Fragment {
 
     }
 
+    public void changeSongListFragment(Fragment fragment) {
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+
+        FragmentTransaction transaction = fm.beginTransaction();
+
+        transaction.replace(R.id.music_player_layout, fragment);
+
+        transaction.commit();
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
 
         Log.d(TAG, "onCreateView: Welcome to SongListFragment class");
 
@@ -123,82 +135,69 @@ public class SongListFragment extends Fragment {
 
         userGreetings.setText("Welcome Dear " + userName);
 
+        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
 
-        songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
 
-        SongListRepo songListRepo = new SongListRepo();
+            songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
 
-        songListFragmentViewModel.InitializeProcess(songListRepo);
+            SongListRepo songListRepo = new SongListRepo();
 
-        songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
+            songListFragmentViewModel.InitializeProcess(songListRepo);
 
-            @Override
-            public void onChanged(ArrayList<MusicModel> musicModels) {
+            songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
 
-               recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
+                @Override
+                public void onChanged(ArrayList<MusicModel> musicModels) {
 
-                songUrls.setAdapter(recyclerViewAdapter);
+                    recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
 
-                songUrls.setLayoutManager(gridlayoutManager);
+                    songUrls.setAdapter(recyclerViewAdapter);
 
-                recyclerViewAdapter.notifyDataSetChanged();
+                    songUrls.setLayoutManager(gridlayoutManager);
 
-            }
-        });
+                    recyclerViewAdapter.notifyDataSetChanged();
 
-      //  setupRecyclerView();
+                }
+            });
+        } else {
+
+            requestStoragePermission();
+
+        }
+
+    }
+
+    private void requestStoragePermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
+
+
+            new AlertDialog.Builder(view.getContext())
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because i order to get the songs list , we need to have access to your storage  ")
+                    .setPositiveButton("Oh ok ! ", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+                                }
+
+                            }
+                    ).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            }).create().show();
+
+
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+        }
 
     }
 
     public final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
-
-    public boolean checkPermissionREAD_EXTERNAL_STORAGE(
-            final Context context) {
-        int currentAPIVersion = Build.VERSION.SDK_INT;
-        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context,
-                    Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        (Activity) context,
-                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                    showDialog("External storage", context,
-                            Manifest.permission.READ_EXTERNAL_STORAGE);
-
-                } else {
-                    ActivityCompat
-                            .requestPermissions(
-                                    (Activity) context,
-                                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                }
-                return false;
-            } else {
-                return true;
-            }
-
-        } else {
-            return true;
-        }
-    }
-
-    public void showDialog(final String msg, final Context context,
-                           final String permission) {
-        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-        alertBuilder.setCancelable(true);
-        alertBuilder.setTitle("Permission necessary");
-        alertBuilder.setMessage(msg + " permission is necessary");
-        alertBuilder.setPositiveButton(android.R.string.yes,
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions((Activity) context,
-                                new String[]{permission},
-                                MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-                    }
-                });
-        AlertDialog alert = alertBuilder.create();
-        alert.show();
-    }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -207,17 +206,27 @@ public class SongListFragment extends Fragment {
             case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
+
+                    SongListRepo songListRepo = new SongListRepo();
+
+                    songListFragmentViewModel.InitializeProcess(songListRepo);
+
                     songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
 
                         @Override
                         public void onChanged(ArrayList<MusicModel> musicModels) {
 
+                            recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
+
+                            songUrls.setAdapter(recyclerViewAdapter);
+
+                            songUrls.setLayoutManager(gridlayoutManager);
+
                             recyclerViewAdapter.notifyDataSetChanged();
 
                         }
                     });
-
-                    setupRecyclerView();
 
 
                 } else {
@@ -239,7 +248,6 @@ public class SongListFragment extends Fragment {
         songUrls.setAdapter(recyclerViewAdapter);
 
         songUrls.setLayoutManager(gridlayoutManager);
-
 
 
     }
