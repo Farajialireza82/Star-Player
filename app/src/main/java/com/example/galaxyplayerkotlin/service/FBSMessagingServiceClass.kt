@@ -2,8 +2,10 @@ package com.example.galaxyplayerkotlin.service
 
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.galaxyplayerkotlin.Activities.MainActivityClass
@@ -17,17 +19,18 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
 
     private val TAG = "FBSServiceClass"
 
-
     override fun onCreate() {
         super.onCreate()
 
-        Log.d(TAG , " onCreate")
+
+
+        Log.d(TAG, " onCreate")
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        Log.d(TAG , " onDestroy")
+        Log.d(TAG, " onDestroy")
 
 
     }
@@ -58,96 +61,76 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
                 this,
                 0,
                 intent,
-                PendingIntent.FLAG_ONE_SHOT
-            )
-        val resetData = PendingIntent
-
-            .getActivity(
-                this,
-                0,
-                ServiceClass.createIntent(this , ServiceClass.RESET_DATA),
-                PendingIntent.FLAG_ONE_SHOT
+                FLAG_ONE_SHOT
             )
 
-        /*if(p0.data.get("COM") != null){
 
-            Log.d(TAG , "COM isn't null")
+        val resetDataIntent = Intent(this, NotificationReceiver::class.java)
 
-            if(p0.data.get("COM") == "RESET"){
-
-                Log.d(TAG , "Command is to reset isn't null")
+        val resetDataPendingIntent =
+            PendingIntent.getBroadcast(this, 0, resetDataIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
 
-                val notificationBuilder =
-                    NotificationCompat.Builder(this , CHANNEL_ID)
-                        .setContentTitle(title)
-                        .setContentText(body)
-                        .addAction(R.mipmap.icon , "Reset_data" , resetData)
-                        .setAutoCancel(true)
-                        .setSmallIcon(R.mipmap.icon)
-                        .setContentIntent(pendingIntent)
 
-                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-                notificationManager.notify(0 , notificationBuilder.build())
+        if (p0.data["COM"] != null) {
 
-            }else{
+            Log.d(TAG, "COM isn't null")
 
-                val notificationBuilder =
-                    NotificationCompat.Builder(this , CHANNEL_ID)
-                        .setContentTitle(title)
-                        .setContentText(body)
-                        .setAutoCancel(true)
-                        .setSmallIcon(R.mipmap.icon)
-                        .setContentIntent(pendingIntent)
+            if (p0.data["COM"] == "RESET") {
 
-                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                Log.d(TAG, "Command is to reset isn't null")
 
-                notificationManager.notify(0 , notificationBuilder.build())
+
+                val notificationBuilder = createNotif(title, body, pendingIntent)
+
+                notificationBuilder.setColor(Color.BLUE)
+                    .addAction(R.mipmap.icon, "Reset_data", resetDataPendingIntent)
+
+
+                val notificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                notificationManager.notify(0, notificationBuilder.build())
+
+
+            } else {
+
+                val notificationBuilder = createNotif(title, body, pendingIntent)
+
+
+                val notificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+                notificationManager.notify(0, notificationBuilder.build())
 
             }
-        }else{
+        } else {
 
-            val notificationBuilder =
-                NotificationCompat.Builder(this , CHANNEL_ID)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setAutoCancel(true)
-                    .setSmallIcon(R.mipmap.icon)
-                    .setContentIntent(pendingIntent)
-
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            notificationManager.notify(0 , notificationBuilder.build())
-        }*/
+            val notificationBuilder = createNotif(title, body, pendingIntent)
 
 
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val notificationBuilder =
-            NotificationCompat.Builder(this , CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(body)
-                .addAction(R.mipmap.icon , "Reset_data" , resetData)
-                .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.icon)
-                .setContentIntent(pendingIntent)
+            notificationManager.notify(0, notificationBuilder.build())
+        }
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        notificationManager.notify(0 , notificationBuilder.build())
+    }
 
-      /*  val notificationBuilder =
-            NotificationCompat.Builder(this , CHANNEL_ID)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.icon)
-                .setContentIntent(pendingIntent)
+    private fun createNotif(
+        notifTitle: String?,
+        notifBody: String?,
+        notifPendingIntent: PendingIntent
+    ): NotificationCompat.Builder {
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        notificationManager.notify(0 , notificationBuilder.build())*/
-
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle(notifTitle)
+            .setContentText(notifBody)
+            .setAutoCancel(true)
+            .setSmallIcon(R.mipmap.icon)
+            .setContentIntent(notifPendingIntent)
 
     }
 
