@@ -17,7 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import android.support.v4.media.session.MediaSessionCompat;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.galaxyplayerkotlin.Fragments.LoginFragment;
 import com.example.galaxyplayerkotlin.R;
@@ -30,7 +30,6 @@ import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
-import java.util.ArrayList;
 
 import static com.example.galaxyplayerkotlin.service.App.CHANNEL_ID;
 
@@ -43,12 +42,9 @@ public class ServiceClass extends Service {
     public static final String ACTION_PAUSE = "action_pause";
     public static final String ACTION_PLAY = "action_play";
     public static final String ACTION_PLAY_PAUSE = "action_play_pause";
-    public static final String ACTION_LIKED = "action_liked";
-    public static final String ACTION_DISLIKED = "action_disliked";
     public static final String RESET_DATA = "reset_data";
 
-    public static ArrayList<String> disLikedSongs = new ArrayList<>();
-
+    private static final String TAG = "ServiceClass";
 
     public static final int REQUEST_CODE_NOTIFICATION = 1;
 
@@ -90,6 +86,7 @@ public class ServiceClass extends Service {
             return START_STICKY;
         }
 
+
         songURI = extras.getString(EXTRA_MUSIC_URL, "");
 
         title = extras.getString(EXTRA_TITLE, "");
@@ -102,15 +99,18 @@ public class ServiceClass extends Service {
 
         switch (action) {
             case ACTION_PLAY: {
+                Log.d(TAG, "onStartCommand: ACTION_PLAY");
                 playSong(songURI, title);
                 exoPlayer.setPlayWhenReady(true);
                 break;
             }
             case ACTION_PAUSE: {
+                Log.d(TAG, "onStartCommand: ACTION_PAUSE");
                 pauseSong();
                 break;
             }
             case ACTION_PLAY_PAUSE: {
+                Log.d(TAG, "onStartCommand: ACTION_PLAY_PAUSE");
                 if (exoPlayer.getPlayWhenReady()) {
                     pauseSong();
                 } else {
@@ -120,28 +120,17 @@ public class ServiceClass extends Service {
             }
             case RESET_DATA: {
 
-                SharedPreferences preferences = this.getSharedPreferences(LoginFragment.SHARED_PREFS, Context.MODE_PRIVATE);
+                Log.d(TAG, "onStartCommand: RESET_DATA Has been called");
 
-                SharedPreferences.Editor editor = preferences.edit();
+                LoginFragment loginFragment = new LoginFragment();
 
-                editor.putBoolean(LoginFragment.IS_LOGIN, false);
+                loginFragment.saveData("null", false);
 
-                editor.apply();
+                Log.d(TAG, "onStartCommand: IS_LOGIN is now false");
+
+                Log.d(TAG, "onStartCommand: Changed have been applied");
 
                 break;
-            }
-            case ACTION_LIKED: {
-
-                Toast.makeText(this, "Song Added to Favorites list", Toast.LENGTH_SHORT).show();
-                break;
-            }
-
-            case ACTION_DISLIKED: {
-
-                Toast.makeText(this, "Song Added to Disliked list", Toast.LENGTH_SHORT).show();
-
-                disLikedSongs.add(currentMusicUrl);
-
             }
             default: {
                 break;
