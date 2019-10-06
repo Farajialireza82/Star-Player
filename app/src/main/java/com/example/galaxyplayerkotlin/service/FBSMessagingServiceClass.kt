@@ -19,34 +19,15 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
 
     private val TAG = "FBSServiceClass"
 
-    override fun onCreate() {
-        super.onCreate()
-
-
-
-        Log.d(TAG, " onCreate")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        Log.d(TAG, " onDestroy")
-
-
-    }
 
     override fun onMessageReceived(p0: RemoteMessage) {
         super.onMessageReceived(p0)
 
         Log.d(TAG, " onMessageReceived")
 
-        val key = p0.data.keys.toString()
-
-        val values = p0.data.values.toString()
-
-        Log.d(TAG, "keys : $key & values : $values")
 
         val title = p0.notification!!.title
+
         val body = p0.notification!!.body
 
         Log.d(TAG, "title = $title & body = $body ")
@@ -70,8 +51,10 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
         val resetDataPendingIntent =
             PendingIntent.getBroadcast(this, 0, resetDataIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+        val notificationBuilder = createNotif(title, body, pendingIntent)
 
-
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (p0.data["COM"] != null) {
 
@@ -82,39 +65,15 @@ class FBSMessagingServiceClass : FirebaseMessagingService() {
                 Log.d(TAG, "Command is to reset isn't null")
 
 
-                val notificationBuilder = createNotif(title, body, pendingIntent)
 
                 notificationBuilder.setColor(Color.BLUE)
                     .addAction(R.mipmap.icon, "Reset_data", resetDataPendingIntent)
 
 
-                val notificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-                notificationManager.notify(0, notificationBuilder.build())
-
-
-            } else {
-
-                val notificationBuilder = createNotif(title, body, pendingIntent)
-
-
-                val notificationManager =
-                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-                notificationManager.notify(0, notificationBuilder.build())
-
             }
-        } else {
-
-            val notificationBuilder = createNotif(title, body, pendingIntent)
-
-
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            notificationManager.notify(0, notificationBuilder.build())
         }
+
+        notificationManager.notify(0, notificationBuilder.build())
 
 
     }
