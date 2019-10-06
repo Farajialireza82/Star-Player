@@ -3,9 +3,12 @@ package com.example.galaxyplayerkotlin.Activities;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.galaxyplayerkotlin.Adapters.SimpleSectionPagerAdapter;
+import com.example.galaxyplayerkotlin.Fragments.LoginFragment;
 import com.example.galaxyplayerkotlin.Fragments.MusicPlayerFragment;
+import com.example.galaxyplayerkotlin.Fragments.SongListFragment;
 import com.example.galaxyplayerkotlin.Fragments.SwapiFragment;
 import com.example.galaxyplayerkotlin.R;
 import com.google.android.material.tabs.TabLayout;
@@ -22,8 +25,6 @@ public class MainActivityClass extends AppCompatActivity {
 
     private static final String TAG = "MainActivityClass";
 
-    public static final int SWAPI_FRAGMENT = 1;
-    public static final int MUSIC_PLAYER_FRAGMENT = 0;
 
     public static boolean permissionAllowed;
 
@@ -52,7 +53,6 @@ public class MainActivityClass extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
         Log.d(TAG, "onCreate: Opening Login Fragment");
-
     }
 
 

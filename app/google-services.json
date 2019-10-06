@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "879443374175",
+    "firebase_url": "https://galaxyplayerjava.firebaseio.com",
+    "project_id": "galaxyplayerjava",
+    "storage_bucket": "galaxyplayerjava.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:879443374175:android:d6f130a7801c4a3aa6abea",
+        "android_client_info": {
+          "package_name": "com.example.galaxyplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "879443374175-a6ior16q7a6vqjis04u0v2qnvl2mspk6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.galaxyplayer",
+            "certificate_hash": "fbfaf0699beffe108accb296b8809a6b9a3a3436"
+          }
+        },
+        {
+          "client_id": "879443374175-aava41skhhemiopihmkvo494li0udgqj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUo7ov2tYvqOkWB1Q9mHiWtBbu3awWTN4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "879443374175-aava41skhhemiopihmkvo494li0udgqj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -12,6 +12,10 @@ public class SimpleSectionPagerAdapter extends FragmentPagerAdapter {
 
 
 
+
+
+
+
     public SimpleSectionPagerAdapter(FragmentManager fm) {
         super(fm);
     }

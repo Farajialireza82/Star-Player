@@ -21,9 +21,9 @@ import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
 
-     private List<MusicModel> songs;
+    private List<MusicModel> songs;
 
-     public RecyclerViewAdapter(List<MusicModel> songs) {
+    public RecyclerViewAdapter(List<MusicModel> songs) {
         this.songs = songs;
     }
 
@@ -78,7 +78,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     private void set(MusicModel song, RecyclerViewAdapter.ViewHolder viewHolder) {
-        MainActivityClass mainActivityClass = new MainActivityClass();
 
         Intent intent = new Intent(viewHolder.textView.getContext() , PlayActivity.class);
 
@@ -87,16 +86,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         viewHolder.imageView.getContext().startActivity(intent);
 
-
     }
 
 
-     class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView textView;
         ImageView imageView;
 
-         ViewHolder(@NonNull View itemView) {
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textView = itemView.findViewById(R.id.song_url);
