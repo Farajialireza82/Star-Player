@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
@@ -35,11 +36,10 @@ public class LoginFragment extends Fragment {
     private static final String TAG = "LoginFragment";
 
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.activity_login , container , false);
+        View v = inflater.inflate(R.layout.activity_login, container, false);
 
         Log.d(TAG, "onCreateView: Welcome to LoginFragment");
 
@@ -59,7 +59,7 @@ public class LoginFragment extends Fragment {
 
                     isLogin = true;
 
-                    saveData();
+                    saveData(nameEditText.getText().toString() , isLogin);
 
                     loadData();
 
@@ -90,15 +90,13 @@ public class LoginFragment extends Fragment {
 
             Fragment fragment = new SongListFragment();
 
-            FragmentManager fm = getActivity().getSupportFragmentManager();
-            FragmentTransaction transaction = fm.beginTransaction();
-            transaction.replace(R.id.music_player_layout, fragment);
-            transaction.commit();
+            changeLoginFragment(fragment);
 
 
         }
 
     }
+
 
     @Override
     public void onAttach(Context context) {
@@ -111,21 +109,23 @@ public class LoginFragment extends Fragment {
         super.onDetach();
     }
 
-    public void saveData() {
+    public void saveData(String name  , Boolean login) {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        editor.putString(NAME, nameEditText.getText().toString());
-        editor.putBoolean(IS_LOGIN, isLogin);
+        editor.putString(NAME, name);
+        editor.putBoolean(IS_LOGIN, login);
 
         editor.apply();
 
     }
 
+
     public void loadData() {
+
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        userName = sharedPreferences.getString(NAME , "");
+        userName = sharedPreferences.getString(NAME, "");
 
         Log.d(TAG, "loadData: username = " + userName);
 
@@ -134,6 +134,14 @@ public class LoginFragment extends Fragment {
         Log.d(TAG, "loadData: isLogin = " + isLogin);
     }
 
+    public void changeLoginFragment(Fragment fragment){
+
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.music_player_layout, fragment);
+        transaction.commit();
+
+    }
 
 
 }
