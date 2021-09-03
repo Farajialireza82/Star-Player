@@ -17,6 +17,8 @@ public class SongListRepo {
     private static SongListRepo instance;
     private ArrayList<MusicModel> musicModels = new ArrayList<>();
 
+    private static final String TAG = "SongListRepo";
+
     public static SongListRepo getInstance(){
 
         if(instance == null){
@@ -45,7 +47,7 @@ public class SongListRepo {
         String title;
 
 
-        String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA};
+        String[] proj = {MediaStore.Audio.Media._ID, MediaStore.Audio.Media.DISPLAY_NAME, MediaStore.Audio.AudioColumns.DATA, MediaStore.Audio.AudioColumns.ARTIST, MediaStore.Audio.AudioColumns.DURATION};
 
         Cursor audioCursor = application.getApplicationContext().getContentResolver().query
 
@@ -67,9 +69,11 @@ public class SongListRepo {
 
                         String songTitle = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
 
+
                         title = songTitle.replaceAll(".mp3", "");
 
                         music.setTitle(title);
+
 
                         Log.i("activity0101", " we should see a title added text in the log text ");
 
@@ -86,6 +90,43 @@ public class SongListRepo {
                         music.setTitle("Unknown");
 
                     }
+                    try {
+
+                        String songArtist = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+
+                        music.setArtist(songArtist);
+
+
+                    } catch (Exception e) {
+
+                        music.setArtist("Unknown");
+
+                        Log.d(TAG, "getSongs: setArtist= ERROR " + e.getLocalizedMessage() );
+
+                    }
+
+                    try {
+
+                        String msDuration = audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+
+                        String seconds = Integer.valueOf(msDuration)%60000 +"";
+
+                        String songDuration = Integer.valueOf(msDuration)/60000 + ":" + seconds.substring(0,2);
+                        Log.d(TAG, "getSongs: setDuration: Duration = " + songDuration);
+
+                        music.setDuration(songDuration);
+
+
+
+                    } catch (Exception e) {
+
+                        music.setDuration("");
+
+                        Log.d(TAG, "getSongs: setDuration= ERROR " + e.getLocalizedMessage() );
+
+
+                    }
+
 
                     music.setPath(audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.AudioColumns.DATA)));
 
@@ -106,6 +147,5 @@ public class SongListRepo {
         audioCursor.close();
 
     }
-
 
 }

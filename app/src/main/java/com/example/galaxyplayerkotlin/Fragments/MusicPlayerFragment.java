@@ -23,7 +23,7 @@ public class MusicPlayerFragment extends Fragment {
 
         FragmentManager fm = getActivity().getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.music_player_layout, new LoginFragment());
+        transaction.replace(R.id.music_player_layout, new SongListFragment());
         transaction.commit();
 
 

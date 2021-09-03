@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
-import com.example.galaxyplayerkotlin.Activities.MainActivityClass;
 import com.example.galaxyplayerkotlin.Activities.PlayActivity;
 import com.example.galaxyplayerkotlin.Objects.MusicModel;
 import com.example.galaxyplayerkotlin.R;
@@ -41,21 +40,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         final MusicModel song = songs.get(i);
 
+
         final String title = song.getTitle();
 
-        viewHolder.textView.setText(title);
+        viewHolder.song_name.setText(title);
+        viewHolder.artist_name.setText(song.getArtist());
+        viewHolder.song_duration.setText(song.getDuration());
 
         String musicUri = song.getPath();
 
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
 
-        mmr.setDataSource(viewHolder.imageView.getContext() , Uri.parse(musicUri));
+        mmr.setDataSource(viewHolder.song_cover.getContext() , Uri.parse(musicUri));
 
         byte[] rawArt = mmr.getEmbeddedPicture();
 
-        Glide.with(viewHolder.imageView.getContext())
+        Glide.with(viewHolder.song_cover.getContext())
                 .load(rawArt)
-                .into(viewHolder.imageView);
+                .into(viewHolder.song_cover);
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 
@@ -79,27 +81,33 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private void set(MusicModel song, RecyclerViewAdapter.ViewHolder viewHolder) {
 
-        Intent intent = new Intent(viewHolder.textView.getContext() , PlayActivity.class);
+        Intent intent = new Intent(viewHolder.song_name.getContext() , PlayActivity.class);
 
         intent.putExtra("key" , song.getPath());
         intent.putExtra("name" , song.getTitle());
 
-        viewHolder.imageView.getContext().startActivity(intent);
+        viewHolder.song_cover.getContext().startActivity(intent);
 
     }
 
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textView;
-        ImageView imageView;
+        TextView song_name;
+        TextView artist_name;
+        TextView song_duration;
+        ImageView song_cover;
+
+
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            textView = itemView.findViewById(R.id.song_url);
-            imageView = itemView.findViewById(R.id.music_cover);
+            song_name = itemView.findViewById(R.id.song_name);
+            song_cover = itemView.findViewById(R.id.music_cover);
+            artist_name = itemView.findViewById(R.id.artist_name);
+            song_duration = itemView.findViewById(R.id.song_duration);
+
         }
     }
 }
-

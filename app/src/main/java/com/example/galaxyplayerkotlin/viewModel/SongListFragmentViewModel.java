@@ -21,8 +21,6 @@ public class SongListFragmentViewModel extends AndroidViewModel {
 
     MutableLiveData<ArrayList<MusicModel>> songs;
 
-   // public SongListRepo songListRepo = new SongListRepo();
-
     public void InitializeProcess(SongListRepo songListRepo) {
 
         songListRepo = SongListRepo.getInstance();

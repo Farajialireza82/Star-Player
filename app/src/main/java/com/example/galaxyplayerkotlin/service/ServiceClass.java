@@ -19,7 +19,6 @@ import androidx.core.app.NotificationCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.util.Log;
 
-import com.example.galaxyplayerkotlin.Fragments.LoginFragment;
 import com.example.galaxyplayerkotlin.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -116,20 +115,6 @@ public class ServiceClass extends Service {
                 } else {
                     resumeSong();
                 }
-                break;
-            }
-            case RESET_DATA: {
-
-                Log.d(TAG, "onStartCommand: RESET_DATA Has been called");
-
-                LoginFragment loginFragment = new LoginFragment();
-
-                loginFragment.saveData("null", false);
-
-                Log.d(TAG, "onStartCommand: IS_LOGIN is now false");
-
-                Log.d(TAG, "onStartCommand: Changed have been applied");
-
                 break;
             }
             default: {
