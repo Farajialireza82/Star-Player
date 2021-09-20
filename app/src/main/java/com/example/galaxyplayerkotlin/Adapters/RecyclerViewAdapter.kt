@@ -1,113 +1,69 @@
-package com.example.galaxyplayerkotlin.Adapters;
+package com.example.galaxyplayerkotlin.Adapters
 
-import android.content.Intent;
-import android.media.MediaMetadataRetriever;
-import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-import com.bumptech.glide.Glide;
-import com.example.galaxyplayerkotlin.Activities.PlayActivity;
-import com.example.galaxyplayerkotlin.Objects.MusicModel;
-import com.example.galaxyplayerkotlin.R;
+import android.content.Intent
+import android.media.MediaMetadataRetriever
+import android.net.Uri
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.example.galaxyplayerkotlin.Activities.PlayActivity
+import com.example.galaxyplayerkotlin.Objects.MusicModel
+import com.example.galaxyplayerkotlin.R
 
-import java.util.List;
+class RecyclerViewAdapter(private val songs: List<MusicModel>) :
+    RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
 
-
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
-
-    private List<MusicModel> songs;
-
-    public RecyclerViewAdapter(List<MusicModel> songs) {
-        this.songs = songs;
-    }
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): ViewHolder = ViewHolder(
+        LayoutInflater.from(viewGroup.context)
+            .inflate(R.layout.recycler_view_holder, viewGroup, false)
+    )
 
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(viewGroup.getContext()).
-                inflate(R.layout.recycler_view_holder, viewGroup, false);
-        return new ViewHolder(view);
-    }
+    override fun onBindViewHolder(viewHolder: ViewHolder, i: Int) {
 
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int i) {
+        val song = songs[i]
 
-        final MusicModel song = songs.get(i);
+        val title = song.title
 
+        viewHolder.song_name.text = title
 
-        final String title = song.getTitle();
+        viewHolder.artist_name.text = song.artist
 
-        viewHolder.song_name.setText(title);
-        viewHolder.artist_name.setText(song.getArtist());
-        viewHolder.song_duration.setText(song.getDuration());
+        viewHolder.song_duration.text = song.duration
 
-        String musicUri = song.getPath();
+        val musicUri = song.path
 
-        MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        val mmr = MediaMetadataRetriever()
+        mmr.setDataSource(viewHolder.song_cover.context, Uri.parse(musicUri))
 
-        mmr.setDataSource(viewHolder.song_cover.getContext() , Uri.parse(musicUri));
+        val rawArt = mmr.embeddedPicture
 
-        byte[] rawArt = mmr.getEmbeddedPicture();
+        Glide.with(viewHolder.song_cover.context)
+            .load(rawArt)
+            .into(viewHolder.song_cover)
 
-        Glide.with(viewHolder.song_cover.getContext())
-                .load(rawArt)
-                .into(viewHolder.song_cover);
-
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View v) {
-
-                set(song , viewHolder );
-
-
-            }
-        });
-
-    }
-
-    @Override
-    public int getItemCount() {
-        return songs.size();
-    }
-
-
-    private void set(MusicModel song, RecyclerViewAdapter.ViewHolder viewHolder) {
-
-        Intent intent = new Intent(viewHolder.song_name.getContext() , PlayActivity.class);
-
-        intent.putExtra("key" , song.getPath());
-        intent.putExtra("name" , song.getTitle());
-
-        viewHolder.song_cover.getContext().startActivity(intent);
-
-    }
-
-
-    class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView song_name;
-        TextView artist_name;
-        TextView song_duration;
-        ImageView song_cover;
-
-
-
-        ViewHolder(@NonNull View itemView) {
-            super(itemView);
-
-            song_name = itemView.findViewById(R.id.song_name);
-            song_cover = itemView.findViewById(R.id.music_cover);
-            artist_name = itemView.findViewById(R.id.artist_name);
-            song_duration = itemView.findViewById(R.id.song_duration);
-
+        viewHolder.itemView.setOnClickListener {
+            set(song, viewHolder)
         }
+    }
+
+    override fun getItemCount() = songs.size
+
+    private operator fun set(song: MusicModel, viewHolder: ViewHolder) {
+        val intent = Intent(viewHolder.song_name.context, PlayActivity::class.java)
+        intent.putExtra("key", song.path)
+        intent.putExtra("name", song.title)
+        viewHolder.song_cover.context.startActivity(intent)
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var song_name: TextView = itemView.findViewById(R.id.song_name)
+        var artist_name: TextView = itemView.findViewById(R.id.artist_name)
+        var song_duration: TextView = itemView.findViewById(R.id.song_duration)
+        var song_cover: ImageView = itemView.findViewById(R.id.music_cover)
     }
 }
