@@ -18,6 +18,7 @@ import com.example.galaxyplayerkotlin.repositories.SongListRepo;
 import com.example.galaxyplayerkotlin.viewModel.SongListFragmentViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -84,11 +86,10 @@ public class SongListFragment extends Fragment {
 
             songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
 
-            SongListRepo songListRepo = new SongListRepo();
+            songListFragmentViewModel.InitializeProcess();
 
-            songListFragmentViewModel.InitializeProcess(songListRepo);
 
-            songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
+            songListFragmentViewModel.reciveSongs().observe(getViewLifecycleOwner(), new Observer<ArrayList<MusicModel>>() {
 
                 @Override
                 public void onChanged(ArrayList<MusicModel> musicModels) {
@@ -105,82 +106,10 @@ public class SongListFragment extends Fragment {
             });
         } else {
 
-            requestStoragePermission();
+            Toast.makeText(getContext(), "Please grant storage permission from Settings", Toast.LENGTH_LONG).show();
 
         }
 
     }
 
-    private void requestStoragePermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) {
-
-
-            new AlertDialog.Builder(view.getContext())
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed because i order to get the songs list , we need to have access to your storage  ")
-                    .setPositiveButton("Oh ok ! ", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-                                }
-
-                            }
-                    ).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            }).create().show();
-
-
-        } else {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-        }
-
-    }
-
-    public final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
-
-                    SongListRepo songListRepo = new SongListRepo();
-
-                    songListFragmentViewModel.InitializeProcess(songListRepo);
-
-                    songListFragmentViewModel.reciveSongs().observe(this, new Observer<ArrayList<MusicModel>>() {
-
-                        @Override
-                        public void onChanged(ArrayList<MusicModel> musicModels) {
-
-                            recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
-
-                            songUrls.setAdapter(recyclerViewAdapter);
-
-                            songUrls.setLayoutManager(gridlayoutManager);
-
-                            recyclerViewAdapter.notifyDataSetChanged();
-
-                        }
-                    });
-
-
-                } else {
-                    Toast.makeText(getContext(), "Access Denied", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions,
-                        grantResults);
-        }
-    }
 }
-

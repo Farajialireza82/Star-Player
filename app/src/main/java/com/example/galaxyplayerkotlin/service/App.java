@@ -3,7 +3,10 @@ package com.example.galaxyplayerkotlin.service;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.os.Build;
+
+import androidx.multidex.MultiDex;
 
 public class App extends Application {
 
@@ -17,6 +20,7 @@ public class App extends Application {
 
         createNotificationChannel("Galaxy Player");
     }
+
 
 
     private void createNotificationChannel(String channel_name) {
@@ -37,6 +41,10 @@ public class App extends Application {
 
     }
 
-
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
 }
 

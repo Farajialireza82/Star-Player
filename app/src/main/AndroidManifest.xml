@@ -30,20 +30,25 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="ServiceChannel" />
 
-        <service android:name=".service.ServiceClass"/>
+        <service android:name=".service.ServiceClass"
+            android:exported="true"/>
 
-        <service android:name=".service.FBSMessagingServiceClass">
+        <service android:name=".service.FBSMessagingServiceClass"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <activity android:name=".Activities.PlayActivity" />
-        <activity android:name=".Activities.MainActivityClass">
+        <activity android:name=".Activities.PlayActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".Activities.MainActivityClass"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <receiver android:name=".service.NotificationReceiver"/>
