@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.example.galaxyplayerkotlin.Activities.MainActivityClass
 import com.example.galaxyplayerkotlin.R
-import com.example.galaxyplayerkotlin.service.App.CHANNEL_ID
+import com.example.galaxyplayerkotlin.service.App.Companion.CHANNEL_ID
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 
