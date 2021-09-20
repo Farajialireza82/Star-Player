@@ -51,8 +51,6 @@ public class PlayActivity extends AppCompatActivity {
                     return;
                 }
 
-                Toast.makeText(PlayActivity.this, "Service Connected", Toast.LENGTH_SHORT).show();
-
                 Log.i("service-activity", "Service Connected successfully ");
 
                 try {
