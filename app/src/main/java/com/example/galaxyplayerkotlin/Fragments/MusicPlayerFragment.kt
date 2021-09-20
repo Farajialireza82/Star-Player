@@ -1,32 +1,27 @@
-package com.example.galaxyplayerkotlin.Fragments;
+package com.example.galaxyplayerkotlin.Fragments
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.Fragment
+import com.example.galaxyplayerkotlin.R
+import com.example.galaxyplayerkotlin.Fragments.SongListFragment
 
+class MusicPlayerFragment : Fragment() {
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
-import com.example.galaxyplayerkotlin.R;
-
-public class MusicPlayerFragment extends Fragment {
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.music_player_layout , container , false);
-
-        FragmentManager fm = getActivity().getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.music_player_layout, new SongListFragment());
-        transaction.commit();
-
-
-        return view;
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.music_player_layout, container, false)
+        val fm = activity?.supportFragmentManager
+        val transaction = fm?.beginTransaction()
+        transaction?.replace(R.id.music_player_layout, SongListFragment())
+        transaction?.commit()
+        return view
     }
+
+
 }
