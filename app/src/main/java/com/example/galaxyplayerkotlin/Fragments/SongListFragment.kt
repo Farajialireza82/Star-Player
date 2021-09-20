@@ -1,115 +1,90 @@
-package com.example.galaxyplayerkotlin.Fragments;
+package com.example.galaxyplayerkotlin.Fragments
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Bundle
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.galaxyplayerkotlin.Adapters.RecyclerViewAdapter
+import com.example.galaxyplayerkotlin.Objects.MusicModel
+import com.example.galaxyplayerkotlin.R
+import com.example.galaxyplayerkotlin.viewModel.SongListFragmentViewModel
+import java.util.*
 
-import com.example.galaxyplayerkotlin.Objects.MusicModel;
-import com.example.galaxyplayerkotlin.Adapters.RecyclerViewAdapter;
-import com.example.galaxyplayerkotlin.R;
-import com.example.galaxyplayerkotlin.repositories.SongListRepo;
-import com.example.galaxyplayerkotlin.viewModel.SongListFragmentViewModel;
+class SongListFragment : Fragment(R.layout.fragment_songlist) {
 
-import java.util.ArrayList;
-import java.util.List;
+    lateinit var songs: ArrayList<MusicModel>
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+    lateinit var recyclerViewAdapter: RecyclerViewAdapter
 
-public class SongListFragment extends Fragment {
+    private lateinit var songUrls: RecyclerView
 
-    public static boolean play;
+    private lateinit var manager: LinearLayoutManager
 
-    public ArrayList<MusicModel> songs;
+    private lateinit var gridlayoutManager: GridLayoutManager
 
-    RecyclerViewAdapter recyclerViewAdapter;
-
-    RecyclerView songUrls;
-
-    LinearLayoutManager manager;
-
-    GridLayoutManager gridlayoutManager;
-
-    SongListFragmentViewModel songListFragmentViewModel;
-
-    View view;
-
-    private static final String TAG = "SongListFragment";
-
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        view = inflater.inflate(R.layout.fragment_songlist, container, false);
+    private lateinit var songListFragmentViewModel: SongListFragmentViewModel
 
 
-        return view;
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.d(TAG, "onCreateView: Welcome to SongListFragment class")
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        play = true
 
+        songUrls = view.findViewById(R.id.recycler_view)
 
-        Log.d(TAG, "onCreateView: Welcome to SongListFragment class");
+        manager = LinearLayoutManager(activity)
 
-        play = true;
+        gridlayoutManager = GridLayoutManager(activity, 1)
 
-        songUrls = view.findViewById(R.id.recycler_view);
+        songUrls.layoutManager = gridlayoutManager
 
-        manager = new LinearLayoutManager(getActivity());
+        songs = ArrayList()
 
-        gridlayoutManager = new GridLayoutManager(getActivity(), 1);
+        if (ContextCompat.checkSelfPermission(
+                view.context,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            songListFragmentViewModel =
+                ViewModelProvider(this).get(SongListFragmentViewModel::class.java)
 
-        songUrls.setLayoutManager(gridlayoutManager);
+            songListFragmentViewModel.InitializeProcess()
 
-        songs = new ArrayList<>();
+            songListFragmentViewModel.reciveSongs()
+                .observe(viewLifecycleOwner, Observer { musicModels ->
 
-        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    recyclerViewAdapter = RecyclerViewAdapter(musicModels)
 
+                    songUrls.adapter = recyclerViewAdapter
 
-            songListFragmentViewModel = ViewModelProviders.of(this).get(SongListFragmentViewModel.class);
+                    songUrls.layoutManager = gridlayoutManager
 
-            songListFragmentViewModel.InitializeProcess();
-
-
-            songListFragmentViewModel.reciveSongs().observe(getViewLifecycleOwner(), new Observer<ArrayList<MusicModel>>() {
-
-                @Override
-                public void onChanged(ArrayList<MusicModel> musicModels) {
-
-                    recyclerViewAdapter = new RecyclerViewAdapter(musicModels);
-
-                    songUrls.setAdapter(recyclerViewAdapter);
-
-                    songUrls.setLayoutManager(gridlayoutManager);
-
-                    recyclerViewAdapter.notifyDataSetChanged();
-
-                }
-            });
+                    recyclerViewAdapter.notifyDataSetChanged()
+                })
         } else {
-
-            Toast.makeText(getContext(), "Please grant storage permission from Settings", Toast.LENGTH_LONG).show();
-
+            Toast.makeText(
+                context,
+                "Please grant storage permission from Settings",
+                Toast.LENGTH_LONG
+            ).show()
         }
-
     }
 
+    companion object {
+        var play = false
+        private const val TAG = "SongListFragment"
+    }
 }
