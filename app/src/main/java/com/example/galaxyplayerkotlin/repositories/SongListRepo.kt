@@ -33,21 +33,19 @@ class SongListRepo {
         if (audioCursor != null) {
             if (audioCursor.moveToFirst()) {
                 do {
-                    val music = MusicModel("null", "null", "null", "null")
+                    val music = MusicModel("null", "null", "null", "null", null)
                     try {
-                        Log.i(
-                            "activity0101",
-                            " we should see a getting music text in the log text "
-                        )
+
                         val songTitle =
+
                             audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+
                         title = songTitle.replace(".mp3".toRegex(), "")
+
                         music.title = title
-                        Log.i("activity0101", " we should see a title added text in the log text ")
+
                     } catch (e: Exception) {
-                        Log.i("activity0101", " there was an Exeption while setting the title ")
-                        Log.i("activity0101", " we should see a error in the log text ")
-                        Log.i("activity0101", " error is $e")
+
                         music.title = "Unknown"
                     }
                     try {
@@ -63,13 +61,15 @@ class SongListRepo {
                             audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION))
                         val seconds = msDuration.toInt() % 60000
                         val songDuration =
-                            (msDuration.toInt() / 60000).toString() + ":" + seconds.toString().substring(0, 2)
+                            (msDuration.toInt() / 60000).toString() + ":" + seconds.toString()
+                                .substring(0, 2)
 
                         music.duration = songDuration
                     } catch (e: Exception) {
                         music.duration = ""
 
                     }
+
                     music.path =
                         audioCursor.getString(audioCursor.getColumnIndexOrThrow(AudioColumns.DATA))
 
@@ -79,6 +79,7 @@ class SongListRepo {
         }
         audioCursor!!.close()
     }
+
     companion object {
         val INSTANCE = SongListRepo()
     }

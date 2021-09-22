@@ -3,6 +3,7 @@ package com.example.galaxyplayerkotlin.Adapters
 import android.content.Intent
 import android.media.MediaMetadataRetriever
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.bumptech.glide.Glide
 import com.example.galaxyplayerkotlin.Activities.PlayActivity
 import com.example.galaxyplayerkotlin.Objects.MusicModel
 import com.example.galaxyplayerkotlin.R
+import java.lang.Exception
+import kotlin.math.log
 
 class RecyclerViewAdapter(private val songs: List<MusicModel>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>() {
@@ -35,16 +38,25 @@ class RecyclerViewAdapter(private val songs: List<MusicModel>) :
 
         viewHolder.song_duration.text = song.duration
 
+
         val musicUri = song.path
 
-        val mmr = MediaMetadataRetriever()
-        mmr.setDataSource(viewHolder.song_cover.context, Uri.parse(musicUri))
+        try {
+            val mmr = MediaMetadataRetriever()
+            mmr.setDataSource(viewHolder.song_cover.context, Uri.parse(musicUri))
 
-        val rawArt = mmr.embeddedPicture
+            val rawArt = mmr.embeddedPicture
 
-        Glide.with(viewHolder.song_cover.context)
-            .load(rawArt)
-            .into(viewHolder.song_cover)
+            Glide.with(viewHolder.song_cover.context)
+                .load(rawArt)
+                .into(viewHolder.song_cover)
+        } catch (e: Exception) {
+            Log.e("RecyclerAdapterError: ", e.printStackTrace().toString())
+
+            Glide.with(viewHolder.itemView.context)
+                .load(R.mipmap.icon)
+                .into(viewHolder.song_cover)
+        }
 
         viewHolder.itemView.setOnClickListener {
             set(song, viewHolder)

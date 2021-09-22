@@ -17,8 +17,12 @@ import com.example.galaxyplayerkotlin.R;
 import com.example.galaxyplayerkotlin.service.ServiceClass;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ui.PlayerView;
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import com.example.galaxyplayerkotlin.R;
 
 public class PlayActivity extends AppCompatActivity {
+
 
     PlayerView playerView;
 
