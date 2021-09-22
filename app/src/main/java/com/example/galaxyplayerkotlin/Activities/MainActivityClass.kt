@@ -2,17 +2,11 @@ package com.example.galaxyplayerkotlin.Activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.example.galaxyplayerkotlin.Adapters.ViewPagerAdapter
 import com.example.galaxyplayerkotlin.R
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-
-val animalsArray = arrayOf(
-    "Tracks",
-    "Artists"
-)
 
 class MainActivityClass : AppCompatActivity(R.layout.activity_main_layout) {
 
@@ -26,7 +20,11 @@ class MainActivityClass : AppCompatActivity(R.layout.activity_main_layout) {
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = animalsArray[position]
+            tab.text = fragmentNames[position]
         }.attach()
     }
+    val fragmentNames = arrayOf(
+        "Tracks",
+        "Artists"
+    )
 }
