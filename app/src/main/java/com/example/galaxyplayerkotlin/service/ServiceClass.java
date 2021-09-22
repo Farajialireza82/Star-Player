@@ -23,9 +23,9 @@ import com.example.galaxyplayerkotlin.R;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.ProgressiveMediaSource;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 
@@ -222,9 +222,8 @@ public class ServiceClass extends Service {
     }
 
     private void createExoPlayer() {
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(
-                new DefaultRenderersFactory(this),
-                new DefaultTrackSelector(), new DefaultLoadControl());
+        exoPlayer = new SimpleExoPlayer.Builder(this,
+                new DefaultRenderersFactory(this)).build();
 
     }
 
@@ -236,7 +235,7 @@ public class ServiceClass extends Service {
     private MediaSource createMediaSource(String songURL) {
         Uri uri = Uri.parse(songURL);
 
-        return new ExtractorMediaSource.Factory(
+        return new ProgressiveMediaSource.Factory(
                 new DefaultDataSourceFactory(this, "Exoplayer-local")).
                 createMediaSource(uri);
     }
