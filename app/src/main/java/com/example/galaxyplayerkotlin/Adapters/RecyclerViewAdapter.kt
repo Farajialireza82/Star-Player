@@ -35,7 +35,8 @@ import java.io.File
 
 import android.content.Context
 import android.util.Size
-import java.security.AccessController.getContext
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 
 
 class RecyclerViewAdapter(private val songs: List<MusicModel>) :
@@ -85,6 +86,9 @@ class RecyclerViewAdapter(private val songs: List<MusicModel>) :
         viewHolder.itemView.setOnClickListener {
             set(song, viewHolder)
         }
+
+
+
     }
 
     override fun getItemCount() = songs.size

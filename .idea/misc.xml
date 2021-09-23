@@ -4,7 +4,9 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/drawable/ic_baseline_close_24.xml" value="0.37864583333333335" />
-        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/activity_main_layout.xml" value="0.18385416666666668" />
+        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout-night/activity_main_layout.xml" value="0.3625" />
+        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout-night/recycler_view_holder.xml" value="0.1" />
+        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/activity_main_layout.xml" value="0.1" />
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/activity_music.xml" value="0.18385416666666668" />
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/activity_tabbed.xml" value="0.18385416666666668" />
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/fragment_artists_list.xml" value="0.18385416666666668" />
@@ -12,7 +14,7 @@
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/fragment_songlist.xml" value="0.20260416666666667" />
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/fragment_tabbed.xml" value="0.18385416666666668" />
         <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/music_player_layout.xml" value="0.20260416666666667" />
-        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/recycler_view_holder.xml" value="0.20260416666666667" />
+        <entry key="..\:/Programing/Android/Projects/S/Star-PlayerV3/app/src/main/res/layout/recycler_view_holder.xml" value="0.33" />
       </map>
     </option>
   </component>

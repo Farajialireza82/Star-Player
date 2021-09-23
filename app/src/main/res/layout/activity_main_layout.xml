@@ -5,25 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/Theme.AppCompat.DayNight"
+    android:background="@color/mainBackgroundColor"
     tools:context=".Activities.MainActivityClass">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorPrimary"
+        android:layout_height="70dp"
+        android:background="@color/toolbarBackgroundColor"
         app:title="Galaxy Music"
-        app:titleTextColor="#FFF" />
+        app:titleTextAppearance="@style/toolbarTextStyle"
+        app:titleTextColor="@color/toolbarTextColor"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#AB6C7EE2"
-        app:tabIconTint="#B1B1B1"
-        app:tabIndicatorColor="#FFF"
-        app:tabSelectedTextColor="#000000"
-        app:tabTextColor="#656565" />
+        android:background="@color/tablayoutBackground"
+        app:tabIconTint="@color/tablayoutIconTint"
+        app:tabIndicatorColor="@color/tablayoutIndicatorColor"
+        app:tabSelectedTextColor="@color/tablayoutSelectedTextColor"
+        app:tabTextColor="@color/tablayoutTextColor" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
