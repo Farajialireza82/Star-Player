@@ -17,7 +17,7 @@ class App : Application() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val serviceChannel = NotificationChannel(
                 CHANNEL_ID,
-                channel_name, NotificationManager.IMPORTANCE_DEFAULT
+                channel_name, NotificationManager.IMPORTANCE_LOW
             )
             val manager = getSystemService(
                 NotificationManager::class.java

@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.util.Log;
 
 import com.example.galaxyplayerkotlin.R;
@@ -41,6 +42,7 @@ public class ServiceClass extends Service {
     public static final String ACTION_PAUSE = "action_pause";
     public static final String ACTION_PLAY = "action_play";
     public static final String ACTION_PLAY_PAUSE = "action_play_pause";
+    public static final String ACTION_STOP = "action_stop";
     public static final String RESET_DATA = "reset_data";
 
     private static final String TAG = "ServiceClass";
@@ -117,6 +119,9 @@ public class ServiceClass extends Service {
                 }
                 break;
             }
+            case ACTION_STOP:{
+                stop();
+            }
             default: {
                 break;
             }
@@ -128,7 +133,7 @@ public class ServiceClass extends Service {
     @Override
     public void onDestroy() {
         if (exoPlayer != null) {
-            exoPlayer.release();
+           stop();
         }
         super.onDestroy();
     }
@@ -196,6 +201,12 @@ public class ServiceClass extends Service {
                 0
         );
 
+        PendingIntent stop = PendingIntent.getService(this,
+                REQUEST_CODE_NOTIFICATION,
+                ServiceClass.createIntent(this, ACTION_STOP),
+                0
+        );
+
 
         mediaSession = new MediaSessionCompat(this, "tag");
         Bitmap picture = BitmapFactory.decodeResource(getResources(), R.drawable.exo_controls_fastforward);
@@ -205,9 +216,9 @@ public class ServiceClass extends Service {
                 .setContentTitle("Galaxy Player")
                 .setLargeIcon(picture)
                 .setContentText(title)
-                .addAction(R.drawable.ic_skip_previous_black_24dp, "Previous", null)
                 .addAction(R.drawable.ic_play_circle_filled_black_24dp, "Play/Pause", playPause)
                 .addAction(R.drawable.ic_skip_next_black_24dp, "Next", null)
+                .addAction(R.drawable.ic_baseline_close_24, "Stop", stop)
                 .setSubText(name)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .build();
@@ -239,4 +250,26 @@ public class ServiceClass extends Service {
                 new DefaultDataSourceFactory(this, "Exoplayer-local")).
                 createMediaSource(uri);
     }
+
+    private void stop(){
+        exoPlayer.setPlayWhenReady(false);
+        exoPlayer.release();
+        exoPlayer = null;
+        updatePlaybackState(PlaybackStateCompat.STATE_NONE);
+        mediaSession.setActive(false);
+        mediaSession.release();
+    }
+
+    private void updatePlaybackState(int state) {
+        // You need to change the state because the action taken in the controller depends on the state !!!
+        mediaSession.setPlaybackState(
+                new PlaybackStateCompat.Builder().setState(
+                        state // this state is handled in the media controller
+                        , 0L
+                        , 1.0f // Speed playing
+                ).build()
+        );
+    }
+
+
 }
