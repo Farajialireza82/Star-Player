@@ -63,6 +63,10 @@ class SongListFragment : Fragment(R.layout.fragment_songlist) {
             songListFragmentViewModel.receiveSongs()
                 .observe(viewLifecycleOwner, Observer { musicModels ->
 
+                    musicModels.sortBy {
+                        it.title
+                    }
+
                     recyclerViewAdapter = RecyclerViewAdapter(musicModels)
 
                     songUrls.adapter = recyclerViewAdapter
