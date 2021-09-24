@@ -21,7 +21,7 @@ class SongListRepo {
         var title: String
         val proj = arrayOf(
             MediaStore.Audio.Media._ID,
-            MediaStore.Audio.Media.DISPLAY_NAME,
+            MediaStore.Audio.Media.TITLE,
             AudioColumns.DATA,
             AudioColumns.ARTIST,
             AudioColumns.DURATION
@@ -38,7 +38,7 @@ class SongListRepo {
 
                         val songTitle =
 
-                            audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME))
+                            audioCursor.getString(audioCursor.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE))
 
                         title = songTitle.replace(".mp3".toRegex(), "")
 

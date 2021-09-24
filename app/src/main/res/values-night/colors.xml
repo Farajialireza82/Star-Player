@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="colorPrimary">#6C7EE2</color>
+  <color name="colorPrimaryDark">#000000</color>
+  <color name="colorAccent">#FFC4A4</color>
+
+  <color name="purple_200">#FFBB86FC</color>
+  <color name="purple_500">#FF6200EE</color>
+  <color name="purple_700">#FF3700B3</color>
+  <color name="teal_200">#FF03DAC5</color>
+  <color name="teal_700">#FF018786</color>
+  <color name="black">#FF000000</color>
+  <color name="white">#FFFFFFFF</color>
+
+  <color name="mainBackgroundColor">#222222</color>
+  <color name="toolbarBackgroundColor">@color/black</color>
+  <color name="toolbarTextColor">@color/white</color>
+
+  <color name="tablayoutBackground">#AB434343</color>
+  <color name="tablayoutIconTint">#B1B1B1</color>
+  <color name="tablayoutIndicatorColor">#ACACAC</color>
+  <color name="tablayoutSelectedTextColor">#FFFFFF</color>
+  <color name="tablayoutTextColor">#989898</color>
+
+
+  <!--  RecyclerViewHolder-->
+  <color name="cardViewStrokeColor">#FFF</color>
+  <color name="songTextViewTextColor">@color/white</color>
+
+  <!--  StatusBarColor-->
+  <color name="statusBarColor">@color/black</color>
+
+
+
+</resources>
